@@ -12,12 +12,21 @@
   font-display: swap;
 }
 
+/* Adjust the filename to match what is in /public/fonts */
+@font-face {
+  font-family: 'Mona Sans';
+  src: url('/fonts/MonaSans-Variable.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
     /* Fonts */
-    --font-heading: 'Mango Grotesque', sans-serif;
-    --font-sans: 'Mona Sans', sans-serif;
+    --font-heading: 'Mango Grotesque', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Mona Sans', ui-sans-serif, system-ui, sans-serif;
 
     /* NGO Brand Color Tokens */
     --color-primary-dark: #12312B;
@@ -116,17 +125,25 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-white text-[#12312B] font-sans antialiased;
-  }
+
   html {
     @apply font-sans;
   }
-  
+
+  body {
+    @apply bg-white text-[#12312B] font-sans antialiased;
+  }
+
+  /* Headings: Mango Grotesque (only the 700 weight is loaded) */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 700;
     letter-spacing: -0.03em;
     line-height: 0.95;
+  }
+
+  /* Body copy: Mona Sans */
+  p, li, label {
+    font-family: var(--font-sans);
   }
 }

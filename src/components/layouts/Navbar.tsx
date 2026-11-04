@@ -242,6 +242,77 @@ const EASE = [0.76, 0, 0.24, 1] as const;
 // Origin of the circular reveal = the menu button (top right)
 const CLIP_ORIGIN = "at calc(100% - 44px) 44px";
 
+/* ─────────────────────────────────────────────────────────
+   Animated CTA button (same hover animation as the Hero):
+   gold circle blooms from the bottom, label rolls up and is
+   replaced by a copy, arrow shoots out and a new one slides in.
+   ───────────────────────────────────────────────────────── */
+
+type CtaButtonProps = {
+  to: string;
+  label: string;
+  onClick?: () => void;
+  className?: string;
+  showArrow?: boolean;
+  arrowSize?: number;
+};
+
+function CtaButton({
+  to,
+  label,
+  onClick,
+  className = "",
+  showArrow = true,
+  arrowSize = 14,
+}: CtaButtonProps) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className={`group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-full bg-[#12312B] font-medium uppercase tracking-wider text-white transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] hover:scale-[1.04] hover:text-[#12312B] hover:shadow-[0_14px_32px_-10px_rgba(230,161,0,0.6)] active:scale-95 ${className}`}
+    >
+      {/* Gold circle that blooms from the bottom centre */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 left-1/2 aspect-square w-[160%] -translate-x-1/2 translate-y-1/2 scale-0 rounded-full bg-[#E6A100] transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-100"
+      />
+
+      {/* Label that rolls up and is replaced by a copy */}
+      <span className="relative block overflow-hidden leading-[1.5]">
+        <span className="block transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full">
+          {label}
+        </span>
+
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 block translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0"
+        >
+          {label}
+        </span>
+      </span>
+
+      {/* Arrow that shoots out top-right while a new one slides in */}
+      {showArrow && (
+        <span
+          className="relative block overflow-hidden"
+          style={{ width: arrowSize, height: arrowSize }}
+        >
+          <span className="absolute inset-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full group-hover:translate-x-full">
+            <CustomArrowUpRight size={arrowSize} color="currentColor" />
+          </span>
+
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 -translate-x-full translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-x-0 group-hover:translate-y-0"
+          >
+            <CustomArrowUpRight size={arrowSize} color="currentColor" />
+          </span>
+        </span>
+      )}
+    </Link>
+  );
+}
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -304,7 +375,7 @@ export default function Navbar() {
         }`}
       >
         <div className="relative mx-auto flex h-12 max-w-7xl items-center justify-between">
-          
+
           {/* Left: Desktop Nav Links (Not All Caps, Green Color, Underline on Hover) */}
           <nav className="hidden xl:flex items-center gap-8">
             {navLinks.map((link) => (
@@ -358,15 +429,13 @@ export default function Navbar() {
           {/* Right: button (+ menu trigger on mobile) */}
           <div className="ml-auto flex items-center gap-2.5">
             {/* Desktop CTA, always visible */}
-            <Link
-              to="/donate"
-              className="group hidden xl:inline-flex items-center gap-2 rounded-full bg-[#12312B] px-6 py-3 text-xs font-medium tracking-wider uppercase text-white transition-all duration-300 hover:bg-[#E6A100] hover:text-[#12312B]"
-            >
-              <span>SUPPORT MISSION</span>
-              <span className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                <CustomArrowUpRight size={14} color="currentColor" />
-              </span>
-            </Link>
+            <div className="hidden xl:block">
+              <CtaButton
+                to="/donate"
+                label="SUPPORT MISSION"
+                className="px-6 py-3 text-xs"
+              />
+            </div>
 
             {/* Mobile CTA: only appears once scrolled */}
             <AnimatePresence>
@@ -378,12 +447,12 @@ export default function Navbar() {
                   transition={{ duration: 0.3, ease: EASE }}
                   className="xl:hidden"
                 >
-                  <Link
+                  <CtaButton
                     to="/donate"
-                    className="inline-flex items-center rounded-full bg-[#12312B] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-300 hover:bg-[#E6A100] hover:text-[#12312B]"
-                  >
-                    Support
-                  </Link>
+                    label="Support"
+                    showArrow={false}
+                    className="px-4 py-2 text-xs font-semibold"
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -547,14 +616,13 @@ export default function Navbar() {
                   </p>
                 </div>
 
-                <Link
+                <CtaButton
                   to="/donate"
+                  label="SUPPORT MISSION"
+                  arrowSize={16}
                   onClick={() => setIsOpen(false)}
-                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#12312B] py-4 text-xs font-medium tracking-wider uppercase text-white transition-colors duration-300 hover:bg-[#E6A100] hover:text-[#12312B]"
-                >
-                  <span>SUPPORT MISSION</span>
-                  <CustomArrowUpRight size={16} color="currentColor" />
-                </Link>
+                  className="mt-6 w-full py-4 text-xs"
+                />
               </motion.div>
             </div>
           </motion.div>
