@@ -213,7 +213,7 @@
 //   };
 
 //   return (
-//     <section className="relative isolate min-h-screen overflow-hidden bg-white text-[#12312B]">
+//     <section className="relative isolate min-h-screen overflow-hidden bg-white font-sans text-[#12312B]">
 
 //       {/* Subtle dotted background */}
 //       <div
@@ -248,11 +248,11 @@
 //             }}
 //           >
 //             <span className="block font-heading">
-//               Care for every mother
+//               Care For Every Mother
 //             </span>
 
 //             <span className="mt-1.5 block font-heading sm:mt-2">
-//               A future for every child
+//               A Future For Every Child
 //             </span>
 //           </motion.h1>
 
@@ -619,27 +619,27 @@ export default function Hero() {
         {/* Heading, subtext and button */}
         <div className="relative z-20 mx-auto flex w-full flex-col items-center px-3 text-center sm:px-8 lg:px-12">
 
-          {/* Hero Heading - Mango Grotesque */}
+          {/* Hero Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 35 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: EASE }}
-            className="font-heading mx-auto flex max-w-[1450px] flex-col items-center text-[#12312B] text-[clamp(2.1rem,6vw,4rem)] font-normal sm:font-medium lg:text-[clamp(2.75rem,4.6vw,4.75rem)]"
+            className="font-sans mx-auto flex max-w-[1450px] flex-col items-center text-[#12312B] text-[clamp(2.1rem,6vw,4rem)] font-semibold sm:font-semibold lg:text-[clamp(2.75rem,4.6vw,4.75rem)]"
             style={{
               lineHeight: 1.08,
               letterSpacing: "-0.025em",
             }}
           >
-            <span className="block font-heading">
+            <span className="block">
               Care For Every Mother
             </span>
 
-            <span className="mt-1.5 block font-heading sm:mt-2">
+            <span className="mt-1.5 block sm:mt-2">
               A Future For Every Child
             </span>
           </motion.h1>
 
-          {/* Subtext - Mona Sans */}
+          {/* Subtext */}
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -655,7 +655,7 @@ export default function Hero() {
             Join us in making a lasting impact.
           </motion.p>
 
-          {/* Gold button - Mona Sans */}
+          {/* Gold button */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}

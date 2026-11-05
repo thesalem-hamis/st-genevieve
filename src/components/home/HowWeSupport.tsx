@@ -110,14 +110,14 @@ export default function HowWeSupport() {
         {/* Header */}
         <div className="mb-12 grid gap-6 lg:mb-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16">
           <motion.div {...reveal(0)}>
-            <span className="font-sans mb-4 inline-flex items-center rounded-full bg-[#E6A100] px-3.5 py-1 text-[10px] font-bold tracking-[0.14em] text-[#12312B] sm:text-[11px]">
+            <span className="font-heading mb-4 inline-flex items-center rounded-full bg-[#E6A100] px-3.5 py-1 text-[10px] font-bold tracking-[0.14em] text-[#12312B] sm:text-[11px]">
               Support & Benefits
             </span>
 
-            <h2 className="font-heading mt-2 max-w-[600px] text-[clamp(2rem,4vw,3.1rem)] font-semibold leading-[1.08] tracking-[-0.045em] text-white">
+            <h2 className="font-sans mt-2 max-w-[600px] text-[clamp(2rem,4vw,3.1rem)] font-semibold leading-[1.08] tracking-[-0.045em] text-white">
               Creating Opportunities
               <br />
-              <span className="text-[#E6A100] font-heading">
+              <span className="text-[#E6A100] font-sans">
                 Changing Lives
               </span>
             </h2>

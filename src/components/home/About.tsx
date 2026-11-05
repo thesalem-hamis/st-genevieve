@@ -246,7 +246,7 @@ export default function About() {
             stagger={0.07}
             delay={0.1}
             text="Building Stronger Communities Together"
-            className={`${HEADING} mt-6 max-w-[640px] text-[clamp(1.9rem,4vw,3.3rem)] font-semibold leading-[1.08] tracking-[-0.03em]`}
+            className={`${BODY} mt-6 max-w-[640px] text-[clamp(1.9rem,4vw,3.3rem)] font-semibold leading-[1.08] tracking-[-0.03em]`}
           />
         </div>
 
