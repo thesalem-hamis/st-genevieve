@@ -26,6 +26,7 @@ import DashboardDonations from "@/pages/dashboard/DashboardDonation";
 import DashboardVolunteers from "@/pages/dashboard/DashboardVolunteers";
 import DashboardPrograms from "@/pages/dashboard/DashboardPrograms";
 import DashboardBlog from "@/pages/dashboard/DashboardBlog";
+import ImpactPage from "./pages/ImpactPage";
 
 
 
@@ -140,6 +141,7 @@ export default function AppRoutes() {
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
         <Route path="about" element={<AboutPage />} />
+        <Route path="impact" element={<ImpactPage />} />
         <Route path="programs" element={<ProgramsPage />} />
         <Route path="programs/:slug" element={<ProgramDetailPage />} />
         <Route path="donate" element={<DonatePage />} />
