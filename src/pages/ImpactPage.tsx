@@ -57,7 +57,7 @@ import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import ImpactHero from "@/components/impact/ImpactHero";
 import ImpactStats from "@/components/impact/ImpactStats";
 import ImpactTimeline from "@/components/impact/ImpactTimeline";
-import ImpactStories from "@/components/impact/ImpactStrories";
+import ImpactStories from "@/components/impact/ImpactStories";
 import ImpactGallery from "@/components/impact/Impactgallery";
 import { Label, useReveal } from "@/components/impact/Shared";
 import AnimatedHeading from "@/components/about/AnimatedHeading";
