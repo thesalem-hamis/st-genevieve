@@ -321,9 +321,10 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "About Us", path: "/about" },
-    { name: "Programs", path: "/programs" },
+    { name: "Projects", path: "/projects" },
     { name: "Impact", path: "/impact" },
-    { name: "Blog", path: "/blog" },
+    { name: "Volunteer", path: "/volunteer" },
+    // { name: "Blog", path: "/blog" },
     { name: "Contact", path: "/contact" },
   ];
 

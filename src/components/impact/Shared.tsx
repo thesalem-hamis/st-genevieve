@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
+import AnimatedHeading from "@/components/about/AnimatedHeading";
 
 export const EASE = [0.76, 0, 0.24, 1] as const;
 
@@ -31,7 +32,8 @@ export function Label({
   );
 }
 
-/* Title on the left, short intro on the right: same pattern as the About page */
+/* Title on the left, short intro on the right: same pattern as the About page.
+   The title uses the masked word reveal so it matches About. */
 export function SectionHeader({
   label,
   title,
@@ -43,19 +45,39 @@ export function SectionHeader({
 }) {
   const reveal = useReveal();
   return (
-    <motion.div
-      {...reveal(0)}
-      className="grid gap-6 text-[#12312B] lg:grid-cols-[1.1fr_1fr] lg:items-end lg:gap-16"
-    >
+    <div className="grid gap-6 text-[#12312B] lg:grid-cols-[1.1fr_1fr] lg:items-end lg:gap-16">
       <div>
-        <Label>{label}</Label>
-        <h2 className="mt-4 max-w-[640px] font-heading text-[clamp(2rem,3.8vw,3.4rem)] font-normal leading-[1.06] tracking-[-0.025em]">
+        <motion.div {...reveal(0)}>
+          <Label>{label}</Label>
+        </motion.div>
+        <AnimatedHeading
+          as="h2"
+          className="mt-4 max-w-[640px] font-sans text-[clamp(2rem,3.5vw,3.4rem)] font-semibold leading-[1.06] tracking-[-0.03em]"
+        >
           {title}
-        </h2>
+        </AnimatedHeading>
       </div>
-      <p className="max-w-[520px] font-sans text-sm leading-[1.8] text-[#12312B]/75 sm:text-[15px] lg:justify-self-end">
+      <motion.p
+        {...reveal(0.15)}
+        className="max-w-[520px] font-sans text-sm leading-[1.8] text-[#12312B]/75 sm:text-[15px] lg:justify-self-end"
+      >
         {text}
-      </p>
-    </motion.div>
+      </motion.p>
+    </div>
+  );
+}
+
+/* Concentric rings clipped in a card corner (same as the Mission/Vision cards).
+   The parent needs `group relative overflow-hidden`. */
+export function Rings({ tone }: { tone: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute -bottom-16 -right-16 h-[200px] w-[200px] transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100 sm:-bottom-20 sm:-right-20 sm:h-[240px] sm:w-[240px]"
+    >
+      <span className={`absolute inset-0 rounded-full border ${tone}`} />
+      <span className={`absolute inset-[18%] rounded-full border ${tone}`} />
+      <span className={`absolute inset-[36%] rounded-full border ${tone}`} />
+    </div>
   );
 }

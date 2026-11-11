@@ -142,8 +142,8 @@ export default function AppRoutes() {
         <Route index element={<HomePage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="impact" element={<ImpactPage />} />
-        <Route path="programs" element={<ProgramsPage />} />
-        <Route path="programs/:slug" element={<ProgramDetailPage />} />
+        <Route path="projects" element={<ProgramsPage />} />
+        <Route path="projects/:slug" element={<ProgramDetailPage />} />
         <Route path="donate" element={<DonatePage />} />
         <Route path="volunteer" element={<VolunteerPage />} />
         <Route path="blog" element={<BlogPage />} />
