@@ -212,7 +212,7 @@ const PANEL_TONES = [
 const ARROW =
   "grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#12312B]/25 font-sans text-[#12312B] transition-colors duration-300 hover:bg-[#12312B] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6A100] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-30 motion-reduce:transition-none sm:h-11 sm:w-11";
 
-export default function ImpactTimeline() {
+export default function Impacttimeline() {
   const reduceMotion = useReducedMotion();
   const reveal = useReveal();
   const [active, setActive] = useState(0);
