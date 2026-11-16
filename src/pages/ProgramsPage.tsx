@@ -97,7 +97,7 @@ export default function ProgramsPage() {
                 <PillButton to="/donate" variant="gold">
                   MAKE A DONATION
                 </PillButton>
-                <PillButton to="/contact" variant="green">
+                <PillButton to="/volunteer" variant="green">
                   BECOME A PARTNER
                 </PillButton>
               </motion.div>

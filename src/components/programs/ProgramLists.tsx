@@ -1,19 +1,18 @@
-
 import { motion, useReducedMotion } from "framer-motion";
 import AnimatedHeading from "@/components/about/AnimatedHeading";
 import { PillButton } from "@/components/about/Shared";
+import maternalImage from "@/assets/impact9.jpeg";
+import educationImage from "@/assets/impact5.jpeg";
+import skillsImage from "@/assets/impact12.jpeg";
 
 const EASE = [0.76, 0, 0.24, 1] as const;
-
-const PLACEHOLDER =
-  "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1400&q=80";
 
 const PROGRAMMES = [
   {
     tag: "Healthcare",
     title: "Maternal Healthcare",
     text: "Accessible maternal healthcare for mothers in underserved communities, so every mother is cared for before, during and after birth.",
-    image: PLACEHOLDER,
+    image: maternalImage,
     alt: "Healthcare worker caring for a mother and child",
     bg: "bg-[#E8F0EC]",
     dot: "bg-[#12312B]",
@@ -22,7 +21,7 @@ const PROGRAMMES = [
     tag: "Education",
     title: "Basic Education",
     text: "Continuous access to basic education for vulnerable children, building the foundations they need to learn and grow.",
-    image: PLACEHOLDER,
+    image: educationImage,
     alt: "Children learning in a classroom",
     bg: "bg-[#FBF1D4]",
     dot: "bg-[#E6A100]",
@@ -31,7 +30,7 @@ const PROGRAMMES = [
     tag: "Empowerment",
     title: "Economic Skills For Mothers",
     text: "Practical economic skills that help mothers support their families, turning short-term relief into lasting independence.",
-    image: PLACEHOLDER,
+    image: skillsImage,
     alt: "Mothers learning a trade together",
     bg: "bg-[#F8E8E3]",
     dot: "bg-[#C9705F]",
@@ -94,11 +93,12 @@ export default function ProgramsList() {
                     flip ? "md:order-2" : ""
                   }`}
                 >
+                  {/* Fills the box, anchored to the top of the photo */}
                   <img
                     src={p.image}
                     alt={p.alt}
                     loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                    className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                   />
                 </div>
 

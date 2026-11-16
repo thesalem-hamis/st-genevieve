@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { CustomArrowUpRight } from "@/components/ui/CustomIcons";
+import supportImage from "@/assets/impact.jpeg";
 
 const EASE = [0.76, 0, 0.24, 1] as const;
 const BODY = "font-['Mona_Sans',sans-serif]";
@@ -170,7 +171,7 @@ export default function HowWeSupport() {
             className="group relative min-h-[480px] overflow-hidden rounded-[1.75rem] bg-[#E7EAEA] shadow-2xl sm:min-h-[560px] lg:min-h-full"
           >
             <img
-              src="/images/hero/1.jpg"
+              src={supportImage}
               alt="Mother and child sharing a warm moment"
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-105"

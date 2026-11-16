@@ -3,31 +3,39 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CustomArrowUpRight } from "@/components/ui/CustomIcons";
 
+import impact1 from "@/assets/impact-1.jpeg";
+import impact2 from "@/assets/impact.jpeg";
+import impact3 from "@/assets/impact3.jpeg";
+import impact4 from "@/assets/impact4.jpeg";
+// import impact5 from "@/assets/impact5.jpeg";
+import impact6 from "@/assets/impact5.jpeg";
+
+
 const IMAGES = [
   {
-    src: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=900&q=80",
+    src: impact1,
     alt: "Mothers and children smiling during a community outreach",
   },
   {
-    src: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=900&q=80",
+    src: impact2,
     alt: "Children taking part in an educational support class",
   },
   {
-    src: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=900&q=80",
+    src: impact3,
     alt: "A mother embracing her child",
   },
   {
-    src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80",
+    src: impact4,
     alt: "Healthcare professionals assisting families in a clinic",
   },
-  {
-    src: "https://images.unsplash.com/photo-1473605768212-7e1f2c756179?auto=format&fit=crop&w=900&q=80",
-    alt: "A woman carrying her baby on her back",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=900&q=80",
-    alt: "Volunteers distributing aid to families",
-  },
+    // {
+    //   src: impact5,
+    //   alt: "A woman carrying her baby on her back",
+    // },
+    {
+      src: impact6,
+      alt: "A community event bringing people together",
+    },
 ];
 
 const EASE = [0.76, 0, 0.24, 1] as const;

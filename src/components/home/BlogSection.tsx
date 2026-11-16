@@ -1,3 +1,4 @@
+
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 
@@ -38,12 +39,6 @@ const BLOG_POSTS = [
 
 const HEADING_LINES = ["Stories From the", "Heart of Our Work."];
 
-/* Variants — the card is the parent; its children inherit and stagger */
-const itemVariants = {
-  hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
-};
-
 const wordVariants = {
   hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
   show: {
@@ -54,11 +49,32 @@ const wordVariants = {
   },
 };
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 35 },
+  show: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      delay: index * 0.14,
+      ease: EASE,
+    },
+  }),
+};
+
+const imageVariants = {
+  hidden: { scale: 1.12 },
+  show: {
+    scale: 1,
+    transition: { duration: 1.2, ease: EASE },
+  },
+};
+
 export default function BlogSection() {
   const reduceMotion = useReducedMotion();
 
   const reveal = (delay = 0) => ({
-    initial: reduceMotion ? false : { opacity: 0, y: 24 },
+    initial: reduceMotion ? false : { opacity: 0, y: 22 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, margin: "-50px" },
     transition: {
@@ -68,69 +84,49 @@ export default function BlogSection() {
     },
   });
 
-  // Card variants: the card pops in, then its contents follow one by one
-  const cardVariants = (index: number) => ({
-    hidden: { opacity: 0, y: 36, scale: 0.94 },
-    show: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring" as const,
-        stiffness: 140,
-        damping: 16,
-        mass: 0.9,
-        delay: 0.1 + index * 0.14,
-        delayChildren: 0.25 + index * 0.14,
-        staggerChildren: 0.09,
-      },
-    },
-  });
-
-  const imageWrapVariants = {
-    hidden: { clipPath: "inset(0 0 100% 0)" },
-    show: {
-      clipPath: "inset(0 0 0% 0)",
-      transition: { duration: 0.9, ease: EASE },
-    },
-  };
-
-  const imageVariants = {
-    hidden: { scale: 1.25 },
-    show: { scale: 1, transition: { duration: 1.4, ease: EASE } },
-  };
-
-  const lineVariants = {
-    hidden: { scaleX: 0 },
-    show: { scaleX: 1, transition: { duration: 0.9, ease: EASE } },
-  };
-
   return (
     <section
       id="blog-section"
       className="relative isolate overflow-hidden bg-white px-5 py-20 font-sans text-[#12312B] sm:px-10 sm:py-24 lg:px-16 lg:py-28"
     >
-      {/* Faint dotted background — drifts very slowly */}
+      {/* Subtle background texture */}
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0"
         style={{
           backgroundImage:
             "radial-gradient(rgba(18,49,43,0.2) 0.8px, transparent 0.8px)",
-          backgroundSize: "18px 18px",
-          opacity: 0.12,
+          backgroundSize: "20px 20px",
+          opacity: 0.09,
         }}
         animate={
           reduceMotion
             ? undefined
-            : { backgroundPosition: ["0px 0px", "18px 18px"] }
+            : { backgroundPosition: ["0px 0px", "20px 20px"] }
         }
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "linear",
+        }}
       />
 
       <div className="relative z-10 mx-auto max-w-[1300px]">
-        {/* Section Header */}
-        <div className="mx-auto mb-14 max-w-[720px] text-center lg:mb-16">
+
+        {/* Section Heading */}
+        <div className="mx-auto mb-14 max-w-[760px] text-center lg:mb-20">
+
+          <motion.div
+            {...reveal()}
+            className="mb-6 flex items-center justify-center gap-3"
+          >
+            <span className="h-px w-8 bg-[#E6A100]" />
+            <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-[#12312B]/65 sm:text-xs">
+              The Journal
+            </span>
+            <span className="h-px w-8 bg-[#E6A100]" />
+          </motion.div>
+
           <motion.h2
             aria-label={HEADING_LINES.join(" ")}
             initial={reduceMotion ? false : "hidden"}
@@ -138,12 +134,18 @@ export default function BlogSection() {
             viewport={{ once: true, margin: "-50px" }}
             variants={{
               hidden: {},
-              show: { transition: { staggerChildren: 0.07 } },
+              show: {
+                transition: { staggerChildren: 0.07 },
+              },
             }}
-            className="font-sans text-[clamp(2.4rem,5vw,4.4rem)] font-semibold leading-[1] tracking-[-0.035em] text-[#12312B]"
+            className="font-sans text-[clamp(2.5rem,5.5vw,4.6rem)] font-semibold leading-[1.02] tracking-[-0.045em] text-[#12312B]"
           >
             {HEADING_LINES.map((line) => (
-              <span key={line} className="block" aria-hidden="true">
+              <span
+                key={line}
+                className="block"
+                aria-hidden="true"
+              >
                 {line.split(" ").map((word, i) => (
                   <motion.span
                     key={`${word}-${i}`}
@@ -159,94 +161,118 @@ export default function BlogSection() {
           </motion.h2>
 
           <motion.p
-            {...reveal(0.45)}
-            className="mx-auto mt-5 max-w-[570px] font-sans text-sm leading-[1.85] text-[#12312B]/70 sm:text-[15px]"
+            {...reveal(0.35)}
+            className="mx-auto mt-6 max-w-[550px] font-sans text-sm leading-[1.9] text-[#12312B]/65 sm:text-[15px]"
           >
-            Explore stories, updates, and expert perspectives on maternal care,
-            child welfare, digital innovation, and community development.
+            Explore stories, updates, and perspectives on maternal care,
+            child welfare, and the work shaping stronger communities.
           </motion.p>
         </div>
 
-        {/* Blog Cards Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Blog Cards */}
+        <div className="grid grid-cols-1 gap-x-7 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-10">
+
           {BLOG_POSTS.map((post, index) => (
             <motion.article
               key={post.title}
+              custom={index}
               initial={reduceMotion ? false : "hidden"}
               whileInView="show"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={cardVariants(index)}
-              className="relative flex flex-col overflow-hidden rounded-md border border-gray-200 bg-white"
+              viewport={{ once: true, margin: "-60px" }}
+              variants={cardVariants}
+              className="group relative flex flex-col"
             >
-              {/* Thumbnail — wipes open, then settles from a slight zoom */}
-              <motion.a
-                variants={imageWrapVariants}
+              {/* Image */}
+              <a
                 href={post.href}
-                tabIndex={-1}
-                aria-hidden="true"
-                className="relative block aspect-[16/9] w-full overflow-hidden bg-[#12312B]/5"
+                aria-label={`Read ${post.title}`}
+                className="relative mb-6 block overflow-hidden bg-[#12312B]/5 aspect-[1.38/1]"
               >
                 <motion.img
                   variants={imageVariants}
                   src={post.image}
                   alt=""
                   loading="lazy"
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.06]"
                 />
-              </motion.a>
 
-              {/* Content — each line arrives in turn */}
-              <div className="flex flex-1 flex-col p-5 text-left">
-                <motion.div
-                  variants={itemVariants}
-                  className="flex items-center gap-2.5 font-sans text-[11px] font-medium text-[#12312B]/55"
-                >
-                  <span>{post.date}</span>
-                  <span className="h-3 w-px bg-[#12312B]/20" />
-                  <span>{post.readTime}</span>
-                </motion.div>
+                {/* Image overlay */}
+                <div className="absolute inset-0 bg-[#12312B]/0 transition-colors duration-500 group-hover:bg-[#12312B]/10" />
 
-                <motion.h3
-                  variants={itemVariants}
-                  className="mt-3 line-clamp-2 font-sans text-[1.05rem] font-semibold leading-[1.35] tracking-[-0.015em] text-[#12312B] sm:text-[1.1rem]"
-                >
-                  {post.title}
-                </motion.h3>
-
-                <motion.p
-                  variants={itemVariants}
-                  className="mt-2 line-clamp-2 font-sans text-[13px] leading-[1.7] text-[#12312B]/60"
-                >
-                  {post.excerpt}
-                </motion.p>
-
-                {/* Divider draws across, then the footer fades in */}
-                <div className="mt-5">
-                  <motion.span
-                    variants={lineVariants}
-                    className="block h-px w-full origin-left bg-[#12312B]/[0.08]"
-                  />
-
-                  <motion.div
-                    variants={itemVariants}
-                    className="flex items-center justify-between pt-4"
-                  >
-                    <a
-                      href={post.href}
-                      className="font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-[#12312B] after:absolute after:inset-0 after:content-['']"
-                    >
-                      Read Article
-                    </a>
-
-                    <span className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-[#12312B]">
-                      <ArrowUpRight size={14} strokeWidth={2} />
-                    </span>
-                  </motion.div>
+                {/* Image corner label */}
+                <div className="absolute bottom-0 left-0 bg-[#12312B] px-4 py-3 transition-colors duration-300 group-hover:bg-[#E6A100]">
+                  <span className="font-sans text-[9px] font-semibold uppercase tracking-[0.17em] text-white">
+                    Foundation Journal
+                  </span>
                 </div>
+
+                {/* Hover arrow */}
+                <div className="absolute right-4 top-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-[#E6A100] text-[#12312B] opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                  <ArrowUpRight size={19} strokeWidth={1.8} />
+                </div>
+              </a>
+
+              {/* Metadata */}
+              <div className="mb-4 flex items-center gap-3 font-sans text-[10px] font-medium uppercase tracking-[0.12em] text-[#12312B]/50">
+                <span>{post.date}</span>
+                <span className="h-3 w-px bg-[#12312B]/20" />
+                <span>{post.readTime}</span>
+              </div>
+
+              {/* Title */}
+              <h3 className="max-w-[95%] font-sans text-[1.2rem] font-semibold leading-[1.3] tracking-[-0.025em] text-[#12312B] transition-colors duration-300 group-hover:text-[#A97800] sm:text-[1.3rem]">
+                <a href={post.href}>
+                  {post.title}
+                </a>
+              </h3>
+
+              {/* Excerpt */}
+              <p className="mt-3 line-clamp-3 font-sans text-[13px] leading-[1.85] text-[#12312B]/60">
+                {post.excerpt}
+              </p>
+
+              {/* Footer */}
+              <div className="mt-6 flex items-center justify-between border-t border-[#12312B]/10 pt-4">
+
+                <a
+                  href={post.href}
+                  className="relative inline-flex items-center gap-2 font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B] after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-[#E6A100] after:transition-transform after:duration-500 group-hover:after:scale-x-100"
+                >
+                  Read Article
+                </a>
+
+                <a
+                  href={post.href}
+                  aria-label={`Read ${post.title}`}
+                  tabIndex={-1}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#12312B]/15 text-[#12312B] transition-all duration-500 group-hover:rotate-45 group-hover:border-[#E6A100] group-hover:bg-[#E6A100] group-hover:text-[#12312B]"
+                >
+                  <ArrowUpRight size={16} strokeWidth={1.8} />
+                </a>
+
               </div>
             </motion.article>
           ))}
+
         </div>
+
+        {/* View All Articles */}
+        <motion.div
+          {...reveal(0.25)}
+          className="mt-16 flex justify-center lg:mt-20"
+        >
+          <a
+            href="/blog"
+            className="group relative inline-flex items-center gap-4 overflow-hidden rounded-full border border-[#12312B]/20 px-7 py-4 font-sans text-[10px] font-semibold uppercase tracking-[0.17em] text-[#12312B] transition-all duration-500 hover:border-[#12312B] hover:bg-[#12312B] hover:text-white"
+          >
+            <span>Explore All Stories</span>
+            <ArrowUpRight
+              size={15}
+              className="transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1"
+            />
+          </a>
+        </motion.div>
+
       </div>
     </section>
   );

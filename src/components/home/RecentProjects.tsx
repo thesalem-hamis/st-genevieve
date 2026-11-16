@@ -3,6 +3,9 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { CustomArrowUpRight } from "@/components/ui/CustomIcons";
+import maternalImage from "@/assets/impact9.jpeg";
+import educationImage from "@/assets/impact5.jpeg";
+import skillsImage from "@/assets/impact12.jpeg";
 
 const EASE = [0.76, 0, 0.24, 1] as const;
 
@@ -18,8 +21,7 @@ const PROJECTS = [
     impact: "850+ Mothers Supported",
     date: "Jan 15, 2026",
     readTime: "4 min read",
-    image:
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=85",
+    image: maternalImage,
     imageAlt: "Healthcare professional providing care",
   },
   {
@@ -33,8 +35,7 @@ const PROJECTS = [
     impact: "1,200+ Students Supported",
     date: "Jan 15, 2026",
     readTime: "4 min read",
-    image:
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1200&q=85",
+    image: educationImage,
     imageAlt: "Children enjoying a moment together",
   },
   {
@@ -48,8 +49,7 @@ const PROJECTS = [
     impact: "500+ Women Empowered",
     date: "Jan 15, 2026",
     readTime: "5 min read",
-    image:
-      "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85",
+    image: skillsImage,
     imageAlt: "Women collaborating during a development programme",
   },
 ];
@@ -203,7 +203,7 @@ export default function RecentProject() {
                       <div className="absolute inset-0 bg-gradient-to-t from-[#12312B]/70 via-transparent to-transparent" />
 
                       {/* Number */}
-                      <div className="absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#E6A100] font-heading text-lg font-normal text-[#12312B] sm:left-5 sm:top-5 sm:h-11 sm:w-11 sm:text-xl">
+                      <div className="absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#E6A100] font-sans text-lg font-normal text-[#12312B] sm:left-5 sm:top-5 sm:h-11 sm:w-11 sm:text-xl">
                         {activeProject.id}
                       </div>
 
@@ -227,7 +227,7 @@ export default function RecentProject() {
                       {activeProject.category}
                     </span>
 
-                    <h3 className="max-w-[390px] font-heading text-[clamp(1.85rem,3vw,3rem)] font-normal leading-[0.98] tracking-[-0.02em] text-white sm:text-[clamp(2.2rem,3.5vw,3.2rem)]">
+                    <h3 className="max-w-[390px] font-sans text-[clamp(1.85rem,3vw,3rem)] font-normal leading-[0.98] tracking-[-0.02em] text-white sm:text-[clamp(2.2rem,3.5vw,3.2rem)]">
                       {activeProject.title}
                     </h3>
 
@@ -236,7 +236,7 @@ export default function RecentProject() {
                     </p>
 
                     {/* Impact - White */}
-                    <h4 className="mt-4 font-heading text-[1.4rem] font-normal leading-none text-white sm:mt-6 sm:text-[1.7rem]">
+                    <h4 className="mt-4 font-sans text-[1.4rem] font-normal leading-none text-white sm:mt-6 sm:text-[1.7rem]">
                       {activeProject.impact}
                     </h4>
 
@@ -292,7 +292,7 @@ export default function RecentProject() {
                   Next Project
                 </span>
 
-                <h4 className="mt-3 font-heading text-3xl font-normal leading-[0.95] text-white">
+                <h4 className="mt-3 font-sans text-3xl font-normal leading-[0.95] text-white">
                   {nextProject.title}
                 </h4>
 

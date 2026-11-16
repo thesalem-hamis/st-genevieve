@@ -1,5 +1,5 @@
-
 import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   FaInstagram,
@@ -9,6 +9,7 @@ import {
   FaPhone,
 } from "react-icons/fa6";
 import AnimatedHeading from "@/components/about/AnimatedHeading";
+import { CustomArrowLeft } from "@/components/ui/CustomIcons";
 
 const EASE = [0.76, 0, 0.24, 1] as const;
 
@@ -101,180 +102,68 @@ export default function ContactPage() {
 
   return (
     <main className="overflow-hidden bg-white text-[#12312B]">
+      <section className="px-5 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-36 lg:px-10 lg:pb-32 lg:pt-44">
+        {/*
+          One grid:
+          - hero text (top left, wide column for the bold h1)
+          - form (right, starts at the top level with the h1)
+          - original left-column details (below the hero text)
+        */}
+        <div className="relative mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-x-8 gap-y-12 lg:grid-cols-[1.4fr_0.95fr] lg:grid-rows-[auto_1fr] xl:gap-x-14">
 
-      {/* HERO */}
-      <section className="px-5 pb-14 pt-28 sm:px-6 sm:pb-20 sm:pt-36 lg:px-10 lg:pt-44">
-        <div className="mx-auto max-w-[1400px]">
+          {/* HERO TEXT (top left) */}
+          <div className="order-1 lg:col-start-1 lg:row-start-1">
 
-          <motion.div {...reveal(0)}>
-            <span className="inline-flex items-center gap-2 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-[#12312B]/60 sm:text-[11px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#E6A100]" />
-              We'd love to hear from you
-            </span>
-          </motion.div>
-
-          <div className="mt-6 max-w-[850px]">
-            <AnimatedHeading
-              as="h1"
-              className="font-sans text-[clamp(3rem,7vw,6.5rem)] font-semibold leading-[0.98] tracking-[-0.065em]"
+            {/* BACK LINK (lifted above the grid on desktop) */}
+            <motion.div
+              {...reveal(0)}
+              className="mb-8 sm:mb-10 lg:absolute lg:-top-20 lg:left-0 lg:mb-0"
             >
-              Let's start a conversation.
-            </AnimatedHeading>
+              <Link
+                to="/"
+                aria-label="Back to home"
+                className="group inline-flex items-center gap-3 font-sans text-xs font-semibold uppercase tracking-wider text-[#12312B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6A100] focus-visible:ring-offset-4"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-full border border-[#12312B]/20 transition-all duration-300 group-hover:border-[#12312B] group-hover:bg-[#12312B] group-hover:text-white">
+                  <CustomArrowLeft
+                    size={14}
+                    color="currentColor"
+                    className="transition-transform duration-300 group-hover:-translate-x-0.5"
+                  />
+                </span>
+                Back
+              </Link>
+            </motion.div>
 
-            <motion.p
-              {...reveal(0.2)}
-              className="mt-7 max-w-[520px] font-sans text-sm leading-[1.9] text-[#12312B]/65 sm:text-base"
-            >
-              Whether you want to partner with us, support our work, or simply
-              learn more about what we do, we'd love to hear from you.
-            </motion.p>
+            <motion.div {...reveal(0.05)}>
+              <span className="inline-flex items-center gap-2 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-[#12312B]/60 sm:text-[11px]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#E6A100]" />
+                We'd love to hear from you
+              </span>
+            </motion.div>
+
+            <div className="mt-6">
+              <AnimatedHeading
+                as="h1"
+                className="font-sans text-[clamp(3rem,7vw,6.5rem)] font-semibold leading-[0.98] tracking-[-0.065em]"
+              >
+                Let's start a conversation.
+              </AnimatedHeading>
+
+              <motion.p
+                {...reveal(0.2)}
+                className="mt-7 max-w-[520px] font-sans text-sm leading-[1.9] text-[#12312B]/65 sm:text-base"
+              >
+                Whether you want to partner with us, support our work, or simply
+                learn more about what we do, we'd love to hear from you.
+              </motion.p>
+            </div>
           </div>
 
-        </div>
-      </section>
-
-      {/* CONTACT CONTENT */}
-      <section className="px-5 pb-20 sm:px-6 sm:pb-24 lg:px-10 lg:pb-32">
-        <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
-
-          {/* LEFT COLUMN */}
-          <motion.aside
-            {...reveal(0)}
-            className="flex flex-col"
-          >
-            <div>
-              <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
-                GET IN TOUCH
-              </span>
-
-              <h2 className="mt-5 max-w-[400px] font-sans text-3xl font-semibold leading-[1.15] tracking-[-0.04em] sm:text-4xl">
-                Every meaningful change starts somewhere.
-              </h2>
-
-              <p className="mt-5 max-w-[390px] font-sans text-sm leading-[1.9] text-[#12312B]/65">
-                Sometimes it starts with a question, an idea, or simply
-                reaching out. Whatever brings you here, we're listening.
-              </p>
-
-              {/* SOCIAL LINKS */}
-              <div className="mt-9 border-t border-[#12312B]/10 pt-7">
-                <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
-                  FIND US & CONNECT
-                </span>
-
-                <div className="mt-5 space-y-4">
-                  {SOCIAL_LINKS.map((social) => {
-                    const Icon = social.icon;
-
-                    return (
-                      <a
-                        key={social.name}
-                        href={social.href}
-                        target={social.name === "Email" ? undefined : "_blank"}
-                        rel={
-                          social.name === "Email"
-                            ? undefined
-                            : "noopener noreferrer"
-                        }
-                        className="group flex items-center justify-between gap-3 border-b border-[#12312B]/10 pb-3 transition-colors duration-500 hover:border-[#E6A100]"
-                      >
-                        <span className="flex items-center gap-3 font-sans text-sm font-medium text-[#12312B]">
-                          <Icon
-                            size={16}
-                            className="shrink-0 text-[#12312B]/65 transition-colors duration-300 group-hover:text-[#E6A100]"
-                          />
-                          {social.name}
-                        </span>
-
-                        <span className="flex items-center gap-2 text-right font-sans text-xs text-[#12312B]/50 transition-colors group-hover:text-[#12312B]">
-                          {social.handle}
-
-                          <span className="text-[#E6A100] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                            <CustomArrowUpRight size={13} />
-                          </span>
-                        </span>
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* PHONE DETAILS */}
-              <div className="mt-8 border-t border-[#12312B]/10 pt-7">
-                <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
-                  CALL US
-                </span>
-
-                <div className="mt-5 space-y-4">
-                  {PHONE_NUMBERS.map((phone) => (
-                    <a
-                      key={phone.display}
-                      href={phone.href}
-                      className="group flex items-center gap-3 font-sans text-sm font-medium text-[#12312B] transition-colors hover:text-[#A66B38]"
-                    >
-                      <FaPhone
-                        size={14}
-                        className="text-[#12312B]/60 transition-colors group-hover:text-[#E6A100]"
-                      />
-                      {phone.display}
-                    </a>
-                  ))}
-                </div>
-
-                <p className="mt-4 font-sans text-xs text-[#12312B]/45">
-                  Lagos, Nigeria
-                </p>
-              </div>
-            </div>
-
-            {/* CONTACT PURPOSES */}
-            <div className="mt-12 border-t border-[#12312B]/10 pt-8 lg:mt-14">
-              <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
-                HOW YOU CAN CONNECT
-              </span>
-
-              <div className="mt-6 space-y-6">
-                {[
-                  {
-                    number: "01",
-                    title: "Partnerships",
-                    text: "Let's explore how we can work together.",
-                  },
-                  {
-                    number: "02",
-                    title: "Support our work",
-                    text: "Be part of something that makes a difference.",
-                  },
-                  {
-                    number: "03",
-                    title: "General enquiries",
-                    text: "Questions, ideas or just saying hello.",
-                  },
-                ].map((item) => (
-                  <div key={item.number} className="flex gap-5">
-                    <span className="pt-1 font-sans text-[11px] font-medium text-[#E6A100]">
-                      {item.number}
-                    </span>
-
-                    <div>
-                      <h3 className="font-sans text-sm font-semibold">
-                        {item.title}
-                      </h3>
-
-                      <p className="mt-1 font-sans text-xs leading-[1.8] text-[#12312B]/55 sm:text-sm">
-                        {item.text}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.aside>
-
-          {/* RIGHT COLUMN: CONTACT FORM */}
+          {/* CONTACT FORM (right, on the same line as the h1) */}
           <motion.div
             {...reveal(0.15)}
-            className="h-fit self-start rounded-[24px] bg-[#F4F6F2] p-6 sm:rounded-[30px] sm:p-9 lg:p-12"
+            className="order-2 h-fit self-start rounded-[24px] bg-[#F4F6F2] p-6 sm:rounded-[30px] sm:p-9 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:p-8 xl:p-10"
           >
             <div className="mb-9">
               <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
@@ -319,8 +208,8 @@ export default function ContactPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
 
-                {/* NAME & EMAIL */}
-                <div className="grid gap-6 sm:grid-cols-2">
+                {/* NAME & EMAIL (stack in the narrow form column on mid-size screens) */}
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                   <div>
                     <label
                       htmlFor="contact-name"
@@ -463,9 +352,142 @@ export default function ContactPage() {
             )}
           </motion.div>
 
+          {/* LEFT COLUMN DETAILS (unchanged from the original, below the hero text) */}
+          <motion.aside
+            {...reveal(0)}
+            className="order-3 flex flex-col lg:col-start-1 lg:row-start-2 lg:mt-4"
+          >
+            <div>
+              <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
+                GET IN TOUCH
+              </span>
+
+              <h2 className="mt-5 max-w-[400px] font-sans text-3xl font-semibold leading-[1.15] tracking-[-0.04em] sm:text-4xl">
+                Every meaningful change starts somewhere.
+              </h2>
+
+              <p className="mt-5 max-w-[390px] font-sans text-sm leading-[1.9] text-[#12312B]/65">
+                Sometimes it starts with a question, an idea, or simply
+                reaching out. Whatever brings you here, we're listening.
+              </p>
+
+              {/* SOCIAL LINKS */}
+              <div className="mt-9 border-t border-[#12312B]/10 pt-7">
+                <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
+                  FIND US & CONNECT
+                </span>
+
+                <div className="mt-5 space-y-4">
+                  {SOCIAL_LINKS.map((social) => {
+                    const Icon = social.icon;
+
+                    return (
+                      <a
+                        key={social.name}
+                        href={social.href}
+                        target={social.name === "Email" ? undefined : "_blank"}
+                        rel={
+                          social.name === "Email"
+                            ? undefined
+                            : "noopener noreferrer"
+                        }
+                        className="group flex items-center justify-between gap-3 border-b border-[#12312B]/10 pb-3 transition-colors duration-500 hover:border-[#E6A100]"
+                      >
+                        <span className="flex items-center gap-3 font-sans text-sm font-medium text-[#12312B]">
+                          <Icon
+                            size={16}
+                            className="shrink-0 text-[#12312B]/65 transition-colors duration-300 group-hover:text-[#E6A100]"
+                          />
+                          {social.name}
+                        </span>
+
+                        <span className="flex items-center gap-2 text-right font-sans text-xs text-[#12312B]/50 transition-colors group-hover:text-[#12312B]">
+                          {social.handle}
+
+                          <span className="text-[#E6A100] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                            <CustomArrowUpRight size={13} />
+                          </span>
+                        </span>
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* PHONE DETAILS */}
+              <div className="mt-8 border-t border-[#12312B]/10 pt-7">
+                <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
+                  CALL US
+                </span>
+
+                <div className="mt-5 space-y-4">
+                  {PHONE_NUMBERS.map((phone) => (
+                    <a
+                      key={phone.display}
+                      href={phone.href}
+                      className="group flex items-center gap-3 font-sans text-sm font-medium text-[#12312B] transition-colors hover:text-[#A66B38]"
+                    >
+                      <FaPhone
+                        size={14}
+                        className="text-[#12312B]/60 transition-colors group-hover:text-[#E6A100]"
+                      />
+                      {phone.display}
+                    </a>
+                  ))}
+                </div>
+
+                <p className="mt-4 font-sans text-xs text-[#12312B]/45">
+                  Lagos, Nigeria
+                </p>
+              </div>
+            </div>
+
+            {/* CONTACT PURPOSES */}
+            <div className="mt-12 border-t border-[#12312B]/10 pt-8 lg:mt-14">
+              <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
+                HOW YOU CAN CONNECT
+              </span>
+
+              <div className="mt-6 space-y-6">
+                {[
+                  {
+                    number: "01",
+                    title: "Partnerships",
+                    text: "Let's explore how we can work together.",
+                  },
+                  {
+                    number: "02",
+                    title: "Support our work",
+                    text: "Be part of something that makes a difference.",
+                  },
+                  {
+                    number: "03",
+                    title: "General enquiries",
+                    text: "Questions, ideas or just saying hello.",
+                  },
+                ].map((item) => (
+                  <div key={item.number} className="flex gap-5">
+                    <span className="pt-1 font-sans text-[11px] font-medium text-[#E6A100]">
+                      {item.number}
+                    </span>
+
+                    <div>
+                      <h3 className="font-sans text-sm font-semibold">
+                        {item.title}
+                      </h3>
+
+                      <p className="mt-1 font-sans text-xs leading-[1.8] text-[#12312B]/55 sm:text-sm">
+                        {item.text}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.aside>
+
         </div>
       </section>
-
     </main>
   );
 }

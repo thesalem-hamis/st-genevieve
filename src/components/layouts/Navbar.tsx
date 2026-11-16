@@ -16,9 +16,9 @@
 //   const navLinks = [
 //     { name: "Home", path: "/" },
 //     { name: "About Us", path: "/about" },
-//     { name: "Programs", path: "/programs" },
-//     { name: "Impact", path: "/impact" },
-//     { name: "Blog", path: "/blog" },
+//     { name: "Our Work", path: "/our-work" },
+//     { name: "Volunteer", path: "/volunteer" },
+//     { name: "Donate", path: "/donate" },
 //     { name: "Contact", path: "/contact" },
 //   ];
 
@@ -320,13 +320,14 @@ export default function Navbar() {
   const reduceMotion = useReducedMotion();
 
   const navLinks = [
-    { name: "About Us", path: "/about" },
-    { name: "Projects", path: "/projects" },
-    { name: "Impact", path: "/impact" },
-    { name: "Volunteer", path: "/volunteer" },
-    // { name: "Blog", path: "/blog" },
-    { name: "Contact", path: "/contact" },
-  ];
+  { name: "About Us", path: "/about" },
+  { name: "Our Work", path: "/our-work" },
+  { name: "Volunteer", path: "/volunteer" },
+  // { name: "Blog", path: "/blog" },
+  { name: "Donate", path: "/donate" },
+  { name: "Contact", path: "/contact" },
+  
+];
 
   // Scroll tracking: drives the mobile logo -> icon swap
   useEffect(() => {

@@ -1,10 +1,11 @@
 /* ------------------------------------------------------------------
    Single source of data for the Impact page: stats, milestones, stories.
 
-   IMPORTANT: the STATS values, the milestone FIGURES and the STORIES are
-   SAMPLE content so the layout can be judged. Replace them with your real
-   numbers and genuine, consented quotes before the site goes live.
-   If you already had real STATS values, paste them over the STATS array.
+   IMPORTANT: the STATS values, the 2024-2026 milestone FIGURES and the
+   STORIES are SAMPLE content so the layout can be judged. Replace them
+   with your real numbers and genuine, consented quotes before the site
+   goes live.
+   The 2019 and 2022 milestones come from the founder's own account.
 ------------------------------------------------------------------- */
 
 export type Stat = {
@@ -26,32 +27,52 @@ export type Milestone = {
   title: string;
   text: string;
   highlights: { title: string; text: string }[];
-  figures: { value: string; label: string }[]; // SAMPLE figures: replace
+  figures: { value: string; label: string }[]; // SAMPLE figures from 2024: replace
 };
 
 export const MILESTONES: Milestone[] = [
   {
-    year: "2023",
-    tag: "Founded",
-    title: "A response to a need we saw first-hand",
-    text: "In underserved communities, mothers had too little access to healthcare and children too little basic educational infrastructure. We began as a localised relief programme and made the Foundation official the same year.",
+    year: "2019",
+    tag: "The beginning",
+    title: "A midwife sees the need",
+    text: "While working as a midwife in Nigeria, Genevieve Sonia Nwokeide saw how cost and circumstance shaped the health of mothers and children. She could not change everything, but she decided to do something, and began giving 10% of her salary to families in need.",
     highlights: [
       {
-        title: "Community relief begins",
-        text: "The first families were supported directly through a small, local relief programme.",
+        title: "What she witnessed",
+        text: "Mothers staying in hospital for months because they could not pay their bills, and families making difficult healthcare decisions because of money.",
       },
       {
-        title: "Maternal care first",
-        text: "Our earliest work centred on mothers who had little or no access to healthcare.",
+        title: "Risk and fear",
+        text: "Women choosing riskier methods of childbirth because of societal expectations or because safer options were out of reach.",
       },
       {
-        title: "Registered as an NGO",
-        text: "The programme was formalised as a registered non-governmental organisation.",
+        title: "A personal commitment",
+        text: "10% of her salary, set aside to support mothers, children and families in need.",
+      },
+    ],
+    figures: [{ value: "10%", label: "Of her salary given to families in need" }],
+  },
+  {
+    year: "2022",
+    tag: "Established",
+    title: "A personal pledge becomes a foundation",
+    text: "What began as a personal commitment grew into a larger vision. Following advice to formalise these efforts, St. Genevieve Maternal and Child Welfare Foundation was officially established on 16 April 2022.",
+    highlights: [
+      {
+        title: "Formalising the work",
+        text: "A personal giving commitment became a foundation, so the support could reach further and last longer.",
+      },
+      {
+        title: "The name",
+        text: "Inspired by St. Genevieve of Paris, remembered for her devotion to prayer, leadership and her care for the poor.",
+      },
+      {
+        title: "The slogan",
+        text: "\u201CA Slice for a Better Smile,\u201D drawn from her association with distributing loaves of bread.",
       },
     ],
     figures: [
-      { value: "40", label: "Families supported" },
-      { value: "1", label: "Community served" },
+      { value: "16 April", label: "2022, the Foundation is officially established" },
     ],
   },
   {

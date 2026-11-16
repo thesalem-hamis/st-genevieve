@@ -18,6 +18,7 @@ import ContactPage from "@/pages/ContactPage";
 import BlogPage from "@/pages/BlogPage";
 import BlogPostPage from "@/pages/BlogPostPage";
 import NotFound from "@/pages/NotFound";
+import OurWorkPage from "@/pages/OurWorkPage";
 
 // --- Dashboard Pages ---
 import DashboardOverview from "@/pages/dashboard/DashboardOverview";
@@ -149,6 +150,9 @@ export default function AppRoutes() {
         <Route path="blog" element={<BlogPage />} />
         <Route path="blog/:slug" element={<BlogPostPage />} />
         <Route path="contact" element={<ContactPage />} />
+        <Route path="/our-work" element={<OurWorkPage />} />
+        <Route path="/projects" element={<Navigate to="/our-work" replace />} />
+        <Route path="/impact" element={<Navigate to="/our-work" replace />} />
       </Route>
 
       {/* --- 404 Fallback --- */}

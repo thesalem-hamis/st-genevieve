@@ -1,14 +1,65 @@
-
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
-import { GALLERY } from "./data";
+import type { GalleryItem } from "./data";
+
+import about from "@/assets/about.jpeg";
+import impact1 from "@/assets/impact-1.jpeg";
+import impact from "@/assets/impact.jpeg";
+import impact2 from "@/assets/impact2.jpeg";
+import impact3 from "@/assets/impact3.jpeg";
+import impact4 from "@/assets/impact4.jpeg";
+import impact5 from "@/assets/impact5.jpeg";
+import impact6 from "@/assets/impact6.jpeg";
+import impact7 from "@/assets/impact7.jpeg";
+import impact8 from "@/assets/impact8.jpeg";
+import impact9 from "@/assets/impact9.jpeg";
+import impact10 from "@/assets/impact10.jpeg";
+import impact11 from "@/assets/impact11.jpeg";
+import impact12 from "@/assets/impact12.jpeg";
+import impact13 from "@/assets/impact13.jpeg";
+import impact14 from "@/assets/impact14.jpeg";
+import impact16 from "@/assets/impact16.jpeg";
 
 const RATIO = {
   portrait: "aspect-[4/5]",
   landscape: "aspect-[4/3]",
   square: "aspect-square",
 } as const;
+
+/* Local photos. Change `ratio` (portrait / landscape / square) on any entry
+   to suit that image, and add a specific `caption` or `alt` where you want one. */
+const PHOTOS: {
+  src: string;
+  ratio: GalleryItem["ratio"];
+  alt?: string;
+  caption?: string;
+}[] = [
+  { src: about, ratio: "landscape" },
+  { src: impact1, ratio: "portrait" },
+  { src: impact, ratio: "square" },
+  { src: impact2, ratio: "portrait" },
+  { src: impact3, ratio: "landscape" },
+  { src: impact4, ratio: "portrait" },
+  { src: impact5, ratio: "square" },
+  { src: impact6, ratio: "landscape" },
+  { src: impact7, ratio: "portrait" },
+  { src: impact8, ratio: "square" },
+  { src: impact9, ratio: "portrait" },
+  { src: impact10, ratio: "landscape" },
+  { src: impact11, ratio: "portrait" },
+  { src: impact12, ratio: "square" },
+  { src: impact13, ratio: "landscape" },
+  { src: impact14, ratio: "portrait" },
+  { src: impact16, ratio: "square" },
+];
+
+const GALLERY: GalleryItem[] = PHOTOS.map((p) => ({
+  src: p.src,
+  ratio: p.ratio,
+  alt: p.alt ?? "A moment from the Foundation's work in the community",
+  caption: p.caption ?? "A moment from our work in the community.",
+}));
 
 export default function ImpactGallery() {
   const [open, setOpen] = useState<number | null>(null);
@@ -201,7 +252,7 @@ export default function ImpactGallery() {
                 />
               ) : (
                 <img
-                  src={item.src.replace("w=1200", "w=1800")}
+                  src={item.src}
                   alt={item.alt}
                   className="max-h-full max-w-full rounded-2xl object-contain"
                 />
@@ -232,5 +283,3 @@ export default function ImpactGallery() {
     </section>
   );
 }
-
-
