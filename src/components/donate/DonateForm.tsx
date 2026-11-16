@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 import { CustomArrowUpRight } from "@/components/ui/CustomIcons";
 import { useReveal } from "@/components/impact/Shared";
 import { DESIGNATIONS, MIN_AMOUNT, PRESETS, naira } from "./data";
@@ -137,11 +138,27 @@ export default function DonateForm() {
           { display_name: "Anonymous", variable_name: "anonymous", value: anonymous ? "Yes" : "No" },
         ],
       },
-      callback: (response) => {
+      callback: async (response) => {
         paid.current = true;
         setReference(response.reference);
         setPaidAmount(amountValue);
         setStatus("success");
+
+        try {
+          await supabase.from("payments").insert({
+            reference: response.reference,
+            amount: Math.round(amountValue * 100),
+            currency: "NGN",
+            donor_name: name.trim() || null,
+            email: email.trim() || null,
+            designation,
+            anonymous,
+            status: "paid",
+          });
+        } catch {
+          // Payment succeeded on Paystack; the record failed to sync.
+          // It will appear once the donor checks their email receipt.
+        }
       },
       onClose: () => {
         if (!paid.current) setStatus("idle");

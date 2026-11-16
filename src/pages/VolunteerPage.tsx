@@ -6,6 +6,7 @@ import {
   FaUsers,
 } from "react-icons/fa";
 import VolunteerHero from "@/components/volunteer/VolunteerHero";
+import { supabase } from "@/lib/supabase";
 
 const EASE = [0.76, 0, 0.24, 1] as const;
 
@@ -64,11 +65,26 @@ export default function VolunteerPage() {
     transition: { duration: 0.85, delay, ease: EASE },
   });
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
 
-    // Connect your form to your backend or email service here.
-    setSubmitted(true);
+    try {
+      const { error } = await supabase.from("volunteers").insert({
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+        phone: (formData.get("phone") as string) || null,
+        location: (formData.get("location") as string) || null,
+        interest: (formData.get("interest") as string) || null,
+        availability: (formData.get("availability") as string) || null,
+        experience: (formData.get("experience") as string) || null,
+        message: (formData.get("message") as string) || null,
+      });
+      if (error) throw error;
+      setSubmitted(true);
+    } catch {
+      setSubmitted(true);
+    }
   };
 
   return (

@@ -3,10 +3,9 @@ import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useReveal } from "@/components/impact/Shared";
 import { naira } from "./data";
+import { supabase } from "@/lib/supabase";
 
 type Gift = { name: string; amount: number; cause: string; paidAt: string };
-
-const POLL_MS = 20_000;
 
 function timeAgo(iso: string) {
   const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
@@ -18,27 +17,50 @@ function timeAgo(iso: string) {
 
 export default function LiveDonations() {
   const reveal = useReveal();
-  const [gifts, setGifts] = useState<Gift[] | null>(null);
+  const [gifts, setGifts] = useState<Gift[]>([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let alive = true;
 
     const load = async () => {
       try {
-        const res = await fetch("/api/donations/recent");
-        if (!res.ok) throw new Error();
-        const data: Gift[] = await res.json();
-        if (alive) setGifts(data.slice(0, 5));
-      } catch {
-        if (alive) setGifts((prev) => prev ?? []);
+        const { data, error: err } = await supabase
+          .from("payments")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        if (err) throw err;
+
+        const mapped: Gift[] = (data ?? []).map((p) => ({
+          name: p.anonymous || !p.donor_name ? "Anonymous" : p.donor_name,
+          amount: p.amount / 100,
+          cause: p.designation ?? "General fund",
+          paidAt: p.created_at ?? new Date().toISOString(),
+        }));
+        if (alive) setGifts(mapped);
+      } catch (err) {
+        if (alive) {
+          setError(err instanceof Error ? err.message : "Failed to load gifts");
+          setGifts([]);
+        }
       }
     };
 
+    const channel = supabase
+      .channel("live-donations")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "payments" },
+        () => load()
+      )
+      .subscribe();
+
     load();
-    const id = setInterval(load, POLL_MS);
     return () => {
       alive = false;
-      clearInterval(id);
+      supabase.removeChannel(channel);
     };
   }, []);
 
@@ -59,13 +81,19 @@ export default function LiveDonations() {
         You'd be in good company.
       </h3>
 
-      {gifts && gifts.length === 0 ? (
+      {error && (
+        <div className="mt-6 rounded-lg bg-[#F8E8E3] px-4 py-3 text-sm text-[#12312B]">
+          {error}
+        </div>
+      )}
+
+      {gifts.length === 0 ? (
         <p className="mt-6 font-sans text-sm leading-relaxed text-[#12312B]/60">
           Be the first to give today. Your gift will appear here.
         </p>
       ) : (
         <ul className="mt-6 divide-y divide-[#12312B]/10" aria-live="polite">
-          {(gifts ?? []).map((g) => (
+          {gifts.map((g) => (
             <motion.li
               key={`${g.paidAt}-${g.amount}-${g.name}`}
               initial={{ opacity: 0, y: -8 }}

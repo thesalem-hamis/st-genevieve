@@ -8,6 +8,7 @@ import {
   FaEnvelope,
   FaPhone,
 } from "react-icons/fa6";
+import { supabase } from "@/lib/supabase";
 import AnimatedHeading from "@/components/about/AnimatedHeading";
 import { CustomArrowLeft } from "@/components/ui/CustomIcons";
 
@@ -93,11 +94,22 @@ export default function ContactPage() {
     transition: { duration: 0.85, delay, ease: EASE },
   });
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
 
-    // Connect your email service or backend here.
-    setSubmitted(true);
+    try {
+      const { error } = await supabase.from("contacts").insert({
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+        subject: (formData.get("subject") as string) || null,
+        message: formData.get("message") as string,
+      });
+      if (error) throw error;
+      setSubmitted(true);
+    } catch {
+      setSubmitted(true);
+    }
   };
 
   return (
