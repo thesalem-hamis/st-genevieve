@@ -4,6 +4,7 @@ import { ScrollColorProvider } from "@/components/providers/ScrollColorContext";
 import { BackgroundLayer } from "@/components/layouts/BackgroundLayer";
 import { ScrollProgress } from "@/components/layouts/ScrollProgress";
 import { ScrollToTop } from "@/components/layouts/ScrollToTop";
+import { ScrollToTopOnNavigate } from "@/components/layouts/ScrollToTopOnNavigate";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/layouts/Footer";
 import Preloader from "@/components/layouts/PreLoader";
@@ -16,6 +17,7 @@ export default function MainLayout() {
 
         <BackgroundLayer />
         <ScrollProgress />
+        <ScrollToTopOnNavigate />
         <ScrollToTop />
         <Navbar />
 

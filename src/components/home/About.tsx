@@ -395,7 +395,7 @@ const IMAGES = {
 /* Placeholder figures: replace with actual numbers */
 const STATS = [
   { to: 98, suffix: "%", label: "Success Rate" },
-  { to: 40, suffix: "%", label: "Trusted Partners" },
+  { to: 80, suffix: "%", label: "Trusted Partners" },
   { to: 90, suffix: "k+", label: "Lives Reached" },
   { to: 200, suffix: "%", label: "Projects Achieved" },
 ];
