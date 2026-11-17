@@ -7,6 +7,7 @@ import {
   Plus,
   Search,
   FileText,
+  Image,
   Eye,
   Edit3,
   Trash2,
@@ -38,6 +39,7 @@ const EMPTY_FORM = {
   content: "",
   author_name: "",
   published: false,
+  cover_image: "",
 };
 
 function slugify(value: string) {
@@ -113,6 +115,8 @@ export default function DashboardBlog() {
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [manualSlug, setManualSlug] = useState(false);
+  const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
 
   const [saveError, setSaveError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -208,11 +212,39 @@ export default function DashboardBlog() {
     }));
   };
 
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setSaveError("Please upload a valid image file.");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      setSaveError("Image must be smaller than 2 MB.");
+      return;
+    }
+
+    setCoverImage(file);
+    setCoverImagePreview(URL.createObjectURL(file));
+  };
+
+  const removeCover = () => {
+    setCoverImage(null);
+    if (coverImagePreview) {
+      URL.revokeObjectURL(coverImagePreview);
+    }
+    setCoverImagePreview(null);
+  };
+
   const resetEditor = () => {
     setCreating(false);
     setEditingPost(null);
     setForm(EMPTY_FORM);
     setManualSlug(false);
+    setCoverImage(null);
+    setCoverImagePreview(null);
     setSaveError("");
   };
 
@@ -233,7 +265,11 @@ export default function DashboardBlog() {
       content: post.content ?? "",
       author_name: post.author_name ?? "",
       published: post.published ?? false,
+      cover_image: post.cover_image ?? "",
     });
+
+    setCoverImage(null);
+    setCoverImagePreview(post.cover_image ?? null);
 
     setSaveError("");
   };
@@ -254,12 +290,37 @@ export default function DashboardBlog() {
     setSaving(true);
 
     try {
+      let coverUrl = form.cover_image || undefined;
+
+      if (coverImage) {
+        const fileExt = coverImage.name.split(".").pop() ?? "jpg";
+        const fileName = `${cleanSlug}-${Date.now()}.${fileExt}`;
+        const filePath = `covers/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("blog-covers")
+          .upload(filePath, coverImage, {
+            cacheControl: "3600",
+            upsert: false,
+            contentType: coverImage.type,
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = supabase.storage
+          .from("blog-covers")
+          .getPublicUrl(filePath);
+
+        coverUrl = urlData.publicUrl;
+      }
+
       const payload = {
         title: cleanTitle,
         slug: cleanSlug,
         excerpt: form.excerpt.trim() || null,
         content: form.content.trim() || null,
         author_name: form.author_name.trim() || null,
+        cover_image: coverUrl ?? null,
         published: form.published,
         published_at: form.published
           ? editingPost?.published && editingPost.published_at
@@ -490,6 +551,84 @@ export default function DashboardBlog() {
                         placeholder="Give your article a meaningful title"
                         className="h-12 w-full rounded-xl border border-[#12312B]/10 bg-[#FAFBF9] px-4 text-sm font-medium outline-none transition-all placeholder:font-normal placeholder:text-[#12312B]/30 focus:border-[#12312B]/40 focus:bg-white focus:ring-4 focus:ring-[#12312B]/[0.035]"
                       />
+                    </div>
+
+                    {/* Cover image */}
+                    <div>
+                      <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[1px] text-[#12312B]/60">
+                        Cover image
+                      </label>
+
+                      <div className="space-y-3">
+                        {coverImagePreview ? (
+                          <div className="relative group">
+                            <img
+                              src={coverImagePreview}
+                              alt="Cover preview"
+                              className="h-48 w-full rounded-xl object-cover border border-[#12312B]/10 bg-[#FAFBF9]"
+                            />
+                            <button
+                              type="button"
+                              onClick={removeCover}
+                              className="absolute right-3 top-3 h-8 w-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200 transition"
+                              aria-label="Remove cover image"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ) : form.cover_image ? (
+                          <div className="relative group">
+                            <img
+                              src={form.cover_image}
+                              alt="Cover preview"
+                              className="h-48 w-full rounded-xl object-cover border border-[#12312B]/10 bg-[#FAFBF9]"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setForm({ ...form, cover_image: "" });
+                                setCoverImagePreview(null);
+                              }}
+                              className="absolute right-3 top-3 h-8 w-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200 transition"
+                              aria-label="Remove cover image"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="aspect-video rounded-xl border-2 border-dashed border-[#12312B]/15 bg-[#FAFBF9] flex flex-col items-center justify-center gap-3 transition-all hover:border-[#12312B]/30 hover:bg-white">
+                            <div className="flex flex-col items-center justify-center gap-1">
+                              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[#12312B]/10 bg-white">
+                                <Image size={20} className="text-[#12312B]/45" />
+                              </div>
+                              <p className="text-[11px] font-medium text-[#12312B]">
+                                Upload cover image
+                              </p>
+                              <p className="text-[10px] text-[#12312B]/40">
+                                JPG, PNG or WebP · Max 2 MB
+                              </p>
+                            </div>
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/webp"
+                              onChange={handleCoverChange}
+                              className="sr-only"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const input = document.querySelector(
+                              'input[type="file"][accept="image/jpeg,image/png,image/webp"]'
+                            ) as HTMLInputElement | null;
+                                input?.click();
+                              }}
+                              className="flex h-10 items-center justify-center gap-2 rounded-lg border border-[#12312B]/10 bg-white px-4 text-xs font-semibold text-[#12312B] outline-none focus:border-[#12312B]/40 transition-all hover:bg-[#12312B]/[0.04]"
+                            >
+                              Choose image
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div>

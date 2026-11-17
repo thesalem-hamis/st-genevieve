@@ -26,7 +26,7 @@ export default function BlogPage() {
           "id, title, slug, excerpt, cover_image, author_name, published_at, created_at"
         )
         .eq("published", true)
-        .order("published_at", { ascending: false });
+        .order("created_at", { ascending: false });
 
       if (alive) {
         setLoading(false);
@@ -36,8 +36,19 @@ export default function BlogPage() {
     };
 
     load();
+
+    const channel = supabase
+      .channel("blog-posts-public")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "blog_posts" },
+        () => load()
+      )
+      .subscribe();
+
     return () => {
       alive = false;
+      void supabase.removeChannel(channel);
     };
   }, []);
 
@@ -122,6 +133,13 @@ export default function BlogPage() {
                       to={`/blog/${post.slug}`}
                       className="flex flex-col gap-2"
                     >
+                      {post.cover_image && (
+                        <img
+                          src={post.cover_image}
+                          alt={post.title}
+                          className="h-40 w-full rounded-xl object-cover mb-2"
+                        />
+                      )}
                       <h3 className="font-sans text-lg font-semibold leading-[1.3]">
                         {post.title}
                       </h3>

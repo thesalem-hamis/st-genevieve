@@ -130,6 +130,16 @@ export default function BlogPostPage() {
               </span>
             </motion.div>
 
+            {post.cover_image && (
+              <motion.div {...localReveal(0.1)}>
+                <img
+                  src={post.cover_image}
+                  alt={post.title}
+                  className="w-full rounded-[24px] object-cover sm:rounded-[32px]"
+                />
+              </motion.div>
+            )}
+
             <div className="mt-6">
               <AnimatedHeading
                 as="h1"

@@ -117,3 +117,26 @@ create policy "authenticated can view admins" on admins
 insert into admins (user_id)
 values ('e5d7c460-d5e7-4065-abfd-be004382e52c')
 on conflict (user_id) do nothing;
+
+-- ─────────────────────────────────────────────
+-- Storage bucket for blog cover images
+-- ─────────────────────────────────────────────
+insert into storage.buckets (id, name, public)
+values ('blog-covers', 'blog-covers', true)
+on conflict (id) do nothing;
+
+create policy if not exists "Public read access for blog covers" on storage.objects
+  for select to public
+  using (bucket_id = 'blog-covers');
+
+create policy if not exists "Authenticated users can upload blog covers" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'blog-covers');
+
+create policy if not exists "Authenticated users can update blog covers" on storage.objects
+  for update to authenticated
+  using (bucket_id = 'blog-covers');
+
+create policy if not exists "Authenticated users can delete blog covers" on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'blog-covers');
