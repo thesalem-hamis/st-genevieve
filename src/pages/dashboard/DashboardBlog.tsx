@@ -125,6 +125,7 @@ export default function DashboardBlog() {
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
+  const [deleteConfirm, setDeleteConfirm] = useState<Post | null>(null);
 
   const loadPosts = useCallback(async () => {
     setError("");
@@ -359,12 +360,6 @@ export default function DashboardBlog() {
   };
 
   const handleDelete = async (post: Post) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to permanently delete "${post.title}"?`
-    );
-
-    if (!confirmed) return;
-
     setDeletingId(post.id);
     setActionError("");
 
@@ -379,6 +374,7 @@ export default function DashboardBlog() {
       setPosts((previous) =>
         previous.filter((item) => item.id !== post.id)
       );
+      setDeleteConfirm(null);
     } catch (err) {
       setActionError(
         err instanceof Error ? err.message : "Unable to delete post."
@@ -1066,7 +1062,7 @@ export default function DashboardBlog() {
                             </button>
 
                             <button
-                              onClick={() => void handleDelete(post)}
+                              onClick={() => setDeleteConfirm(post)}
                               disabled={deletingId === post.id}
                               title="Delete article"
                               className="flex h-9 w-9 items-center justify-center rounded-lg text-red-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-40"
@@ -1146,7 +1142,7 @@ export default function DashboardBlog() {
                         </button>
 
                         <button
-                          onClick={() => void handleDelete(post)}
+                          onClick={() => setDeleteConfirm(post)}
                           disabled={deletingId === post.id}
                           className="flex h-9 w-9 items-center justify-center rounded-lg text-red-400 hover:bg-red-50 disabled:opacity-40"
                           aria-label="Delete article"
@@ -1178,6 +1174,85 @@ export default function DashboardBlog() {
             </div>
           )}
         </div>
+
+        {/* Delete confirmation modal */}
+        {deleteConfirm && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1310]/45 backdrop-blur-sm p-4"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) {
+                setDeleteConfirm(null);
+              }
+            }}
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="delete-modal-title"
+              className="w-full max-w-md rounded-2xl border border-[#12312B]/[0.07] bg-white shadow-2xl p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
+            >
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div>
+                  <p
+                    id="delete-modal-title"
+                    className="text-lg font-semibold tracking-tight text-[#12312B]"
+                  >
+                    Delete article
+                  </p>
+                  <p className="mt-1 text-xs text-[#12312B]/50">
+                    This cannot be undone.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDeleteConfirm(null)}
+                  aria-label="Close"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-[#12312B]/50 transition-colors hover:bg-[#12312B]/[0.06] hover:text-[#12312B]"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600">
+                  <AlertCircle size={18} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-[#12312B]">
+                    Delete <span className="font-semibold">"{deleteConfirm.title}"</span>?
+                  </p>
+                  <p className="mt-1 text-[11px] text-[#12312B]/45">
+                    All content and the cover image will be permanently removed.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={() => setDeleteConfirm(null)}
+                  disabled={deletingId === deleteConfirm.id}
+                  className="flex h-11 items-center justify-center rounded-xl border border-[#12312B]/10 bg-white px-6 text-xs font-semibold text-[#12312B] transition-colors hover:bg-[#12312B]/[0.04] disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleDelete(deleteConfirm)}
+                  disabled={deletingId === deleteConfirm.id}
+                  className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#12312B] px-6 text-xs font-semibold text-[#E6A100] shadow-lg shadow-[#12312B]/10 transition-all hover:bg-[#19443A] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {deletingId === deleteConfirm.id ? (
+                    <RefreshCw size={14} className="animate-spin" />
+                  ) : (
+                    <Trash2 size={15} />
+                  )}
+                  <span>Delete article</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <p className="mt-6 text-center text-[10px] text-[#12312B]/30">
           Saintgenevieve Administration · Content Management
