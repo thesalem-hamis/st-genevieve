@@ -787,7 +787,6 @@ export default function DashboardProjects() {
                       </label>
                       <textarea
                         rows={3}
-                        maxLength={300}
                         value={form.summary}
                         onChange={(e) => updateForm("summary", e.target.value)}
                         placeholder="Brief overview of the project..."

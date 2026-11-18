@@ -12,6 +12,7 @@ create table if not exists payments (
   donor_name text,
   email text,
   designation text,
+  project_id uuid references projects(id) on delete set null,
   anonymous boolean default false,
   status text default 'paid',
   paid_at timestamptz default now(),

@@ -10,6 +10,7 @@ export type Database = {
           donor_name: string | null;
           email: string | null;
           designation: string | null;
+          project_id: string | null;
           anonymous: boolean;
           status: string;
           paid_at: string | null;
@@ -23,6 +24,7 @@ export type Database = {
           donor_name?: string | null;
           email?: string | null;
           designation?: string | null;
+          project_id?: string | null;
           anonymous?: boolean;
           status?: string;
           paid_at?: string | null;
@@ -36,6 +38,7 @@ export type Database = {
           donor_name?: string | null;
           email?: string | null;
           designation?: string | null;
+          project_id?: string | null;
           anonymous?: boolean;
           status?: string;
           paid_at?: string | null;

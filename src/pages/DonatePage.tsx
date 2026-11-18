@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { BadgeCheck, HeartHandshake, ShieldCheck } from "lucide-react";
 import AnimatedHeading from "@/components/about/AnimatedHeading";
@@ -8,6 +8,8 @@ import DonateForm from "@/components/donate/DonateForm";
 import LiveDonations from "@/components/donate/LiveDonations";
 import BankTransfer from "@/components/donate/BankTransfer";
 import { USES } from "@/components/donate/data";
+import { supabase } from "@/lib/supabase";
+import { useEffect, useState } from "react";
 
 const TRUST = [
   { icon: ShieldCheck, text: "Secure checkout" },
@@ -17,6 +19,33 @@ const TRUST = [
 
 export default function Donate() {
   const reveal = useReveal();
+  const [searchParams] = useSearchParams();
+  const [projectId, setProjectId] = useState<string | undefined>();
+
+  useEffect(() => {
+    const slug = searchParams.get("project");
+    if (!slug) {
+      setProjectId(undefined);
+      return;
+    }
+
+    const loadProject = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("projects")
+          .select("id")
+          .eq("slug", slug)
+          .single();
+        if (!error && data) {
+          setProjectId(data.id);
+        }
+      } catch {
+        setProjectId(undefined);
+      }
+    };
+
+    loadProject();
+  }, [searchParams]);
 
   return (
     <main className="overflow-hidden bg-white text-[#12312B]">
@@ -83,7 +112,7 @@ export default function Donate() {
             </div>
           </div>
 
-          <DonateForm />
+          <DonateForm projectId={projectId} />
         </div>
       </section>
 

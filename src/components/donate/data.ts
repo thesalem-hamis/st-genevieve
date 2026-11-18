@@ -34,8 +34,8 @@ export const PRESETS = [
 export const DESIGNATIONS = [
   "Where it's needed most",
   "Maternal Healthcare",
-  "Basic Education",
-  "Economic Skills For Mothers",
+  "Child Welfare",
+  "Skills Development",
 ] as const;
 
 export const USES = [
@@ -48,14 +48,14 @@ export const USES = [
   },
   {
     tag: "Education",
-    title: "Basic Education",
-    text: "Continuous access to learning for vulnerable children.",
+    title: "Child Welfare",
+    text: "Continuous access to learning and care for vulnerable children.",
     bg: "bg-[#FBF1D4]",
     dot: "bg-[#E6A100]",
   },
   {
     tag: "Empowerment",
-    title: "Economic Skills For Mothers",
+    title: "Skills Development",
     text: "Practical skills that turn short-term relief into independence.",
     bg: "bg-[#F8E8E3]",
     dot: "bg-[#C9705F]",

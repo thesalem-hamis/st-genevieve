@@ -60,7 +60,7 @@ const LABEL = "mb-2 block font-sans text-xs font-medium";
 
 type Status = "idle" | "processing" | "success";
 
-export default function DonateForm() {
+export default function DonateForm({ projectId }: { projectId?: string } = {}) {
   const reveal = useReveal();
 
   const [selected, setSelected] = useState<number | "custom">(100000);
@@ -152,6 +152,7 @@ export default function DonateForm() {
             donor_name: name.trim() || null,
             email: email.trim() || null,
             designation,
+            project_id: projectId || null,
             anonymous,
             status: "paid",
           });
