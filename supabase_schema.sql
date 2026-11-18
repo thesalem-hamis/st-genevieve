@@ -140,3 +140,94 @@ create policy if not exists "Authenticated users can update blog covers" on stor
 create policy if not exists "Authenticated users can delete blog covers" on storage.objects
   for delete to authenticated
   using (bucket_id = 'blog-covers');
+
+-- ─────────────────────────────────────────────
+-- Projects (Programs)
+-- ─────────────────────────────────────────────
+create table if not exists projects (
+  id uuid default gen_random_uuid() primary key,
+  project_id text unique not null,        -- unique ID for funding tracking
+  title text not null,
+  tags text[] default '{}',
+  summary text,                            -- small paragraph / short summary
+  start_date date,                         -- Date
+  important_date date,                     -- Important Date
+  location text,
+  status text default 'Ongoing',           -- Ongoing / Completed
+  amount integer default 0,                -- currency subunit (kobo)
+  cover_image text,                        -- cover image URL
+  description text,                        -- full paragraph / details
+  problem text,
+  solution text,
+  outcome text,
+  slug text unique not null,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table projects enable row level security;
+grant select, insert, update, delete on public.projects to authenticated;
+grant select on public.projects to anon;
+create policy "anon can view projects" on projects
+  for select to anon using (true);
+create policy "authenticated can manage projects" on projects
+  for all to authenticated using (true);
+
+-- Secondary images for projects
+create table if not exists project_images (
+  id uuid default gen_random_uuid() primary key,
+  project_id uuid not null references projects(id) on delete cascade,
+  image_url text not null,
+  caption text,
+  created_at timestamptz default now()
+);
+
+alter table project_images enable row level security;
+grant select, insert, update, delete on public.project_images to authenticated;
+grant select on public.project_images to anon;
+create policy "anon can view project images" on project_images
+  for select to anon using (true);
+create policy "authenticated can manage project images" on project_images
+  for all to authenticated using (true);
+
+-- Testimonials for projects
+create table if not exists project_testimonials (
+  id uuid default gen_random_uuid() primary key,
+  project_id uuid not null references projects(id) on delete cascade,
+  name text not null,
+  role text,
+  content text not null,
+  image text,                              -- optional photo URL
+  created_at timestamptz default now()
+);
+
+alter table project_testimonials enable row level security;
+grant select, insert, update, delete on public.project_testimonials to authenticated;
+grant select on public.project_testimonials to anon;
+create policy "anon can view project testimonials" on project_testimonials
+  for select to anon using (true);
+create policy "authenticated can manage project testimonials" on project_testimonials
+  for all to authenticated using (true);
+
+-- ─────────────────────────────────────────────
+-- Storage bucket for project images
+-- ─────────────────────────────────────────────
+insert into storage.buckets (id, name, public)
+values ('project-images', 'project-images', true)
+on conflict (id) do nothing;
+
+create policy if not exists "Public read access for project images" on storage.objects
+  for select to public
+  using (bucket_id = 'project-images');
+
+create policy if not exists "Authenticated users can upload project images" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'project-images');
+
+create policy if not exists "Authenticated users can update project images" on storage.objects
+  for update to authenticated
+  using (bucket_id = 'project-images');
+
+create policy if not exists "Authenticated users can delete project images" on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'project-images');

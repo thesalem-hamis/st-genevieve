@@ -25,7 +25,7 @@ import DashboardOverview from "@/pages/dashboard/DashboardOverview";
 import DashboardLogin from "@/pages/dashboard/DashboardLogin";
 import DashboardDonations from "@/pages/dashboard/DashboardDonation";
 import DashboardVolunteers from "@/pages/dashboard/DashboardVolunteers";
-import DashboardPrograms from "@/pages/dashboard/DashboardPrograms";
+import DashboardPrograms from "@/pages/dashboard/DashboardProjects";
 import DashboardBlog from "@/pages/dashboard/DashboardBlog";
 import DashboardContacts from "@/pages/dashboard/DashboardContacts";
 import ImpactPage from "./pages/ImpactPage";

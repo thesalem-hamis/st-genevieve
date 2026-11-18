@@ -147,6 +147,120 @@ export type Database = {
           created_at?: string | null;
         };
       };
+      projects: {
+        Row: {
+          id: string;
+          project_id: string;
+          title: string;
+          tags: string[];
+          summary: string | null;
+          start_date: string | null;
+          important_date: string | null;
+          location: string | null;
+          status: string;
+          amount: number;
+          cover_image: string | null;
+          description: string | null;
+          problem: string | null;
+          solution: string | null;
+          outcome: string | null;
+          slug: string;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          project_id: string;
+          title: string;
+          tags?: string[];
+          summary?: string | null;
+          start_date?: string | null;
+          important_date?: string | null;
+          location?: string | null;
+          status?: string;
+          amount?: number;
+          cover_image?: string | null;
+          description?: string | null;
+          problem?: string | null;
+          solution?: string | null;
+          outcome?: string | null;
+          slug: string;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          project_id?: string;
+          title?: string;
+          tags?: string[];
+          summary?: string | null;
+          start_date?: string | null;
+          important_date?: string | null;
+          location?: string | null;
+          status?: string;
+          amount?: number;
+          cover_image?: string | null;
+          description?: string | null;
+          problem?: string | null;
+          solution?: string | null;
+          outcome?: string | null;
+          slug?: string;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+      };
+      project_images: {
+        Row: {
+          id: string;
+          project_id: string;
+          image_url: string;
+          caption: string | null;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          project_id: string;
+          image_url: string;
+          caption?: string | null;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          project_id?: string;
+          image_url?: string;
+          caption?: string | null;
+          created_at?: string | null;
+        };
+      };
+      project_testimonials: {
+        Row: {
+          id: string;
+          project_id: string;
+          name: string;
+          role: string | null;
+          content: string;
+          image: string | null;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          project_id: string;
+          name: string;
+          role?: string | null;
+          content: string;
+          image?: string | null;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          project_id?: string;
+          name?: string;
+          role?: string | null;
+          content?: string;
+          image?: string | null;
+          created_at?: string | null;
+        };
+      };
     };
     Views: {
       [_ in never]: never;

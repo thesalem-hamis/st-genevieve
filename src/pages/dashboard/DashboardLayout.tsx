@@ -249,6 +249,7 @@ import {
   X,
   ChevronRight,
   ShieldCheck,
+  LayoutGrid,
 } from "lucide-react";
 
 /* Logo lives in /public, so it is referenced by URL */
@@ -258,6 +259,7 @@ const nav = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/dashboard/donations", label: "Donations", icon: CreditCard },
   { to: "/dashboard/volunteers", label: "Volunteers", icon: Users },
+  { to: "/dashboard/programs", label: "Projects", icon: LayoutGrid },
   { to: "/dashboard/contacts", label: "Messages", icon: Mail },
   { to: "/dashboard/blog", label: "Blog", icon: FileText },
 ];
