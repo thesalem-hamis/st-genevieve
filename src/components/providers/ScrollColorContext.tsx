@@ -8,7 +8,7 @@ interface ScrollColorContextValue {
 const ScrollColorContext = createContext<ScrollColorContextValue | null>(null);
 
 export function ScrollColorProvider({ children }: { children: ReactNode }) {
-  const [activeColor, setActiveColor] = useState("#ffffff");
+  const [activeColor, setActiveColor] = useState("#E6A100");
 
   return (
     <ScrollColorContext.Provider value={{ activeColor, setActiveColor }}>
