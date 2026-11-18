@@ -736,7 +736,100 @@ function DonationPanel({ programme }: { programme: Programme }) {
 export default function ProgramsDetailsPage() {
   const { slug = DEFAULT_SLUG } = useParams();
   const reduceMotion = useReducedMotion();
-  const programme = PROGRAMMES[slug];
+  const hardcoded = PROGRAMMES[slug];
+
+  /* Database-backed project state (for projects created via dashboard) */
+  const [dbProject, setDbProject] = useState<any>(null);
+  const [dbImages, setDbImages] = useState<{ src: string; alt: string }[]>([]);
+  const [dbTestimonials, setDbTestimonials] = useState<{
+    name: string;
+    role: string | null;
+    content: string;
+    image: string | null;
+  }[]>([]);
+  const [dbRaised, setDbRaised] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [dbGoal, setDbGoal] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      if (hardcoded) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+
+        const { data: project, error: projErr } = await supabase
+          .from("projects")
+          .select("*")
+          .eq("slug", slug)
+          .single();
+
+        if (projErr || !project) {
+          if (!cancelled) setLoading(false);
+          return;
+        }
+
+        setDbProject(project);
+        setDbGoal(Math.round((project.amount || 0) / 100));
+
+        /* Secondary images */
+        const { data: images } = await supabase
+          .from("project_images")
+          .select("image_url, caption")
+          .eq("project_id", project.id);
+
+        setDbImages(
+          (images ?? []).map((img: any) => ({
+            src: img.image_url,
+            alt: img.caption || project.title,
+          }))
+        );
+
+        /* Testimonials */
+        const { data: testimonials } = await supabase
+          .from("project_testimonials")
+          .select("name, role, content, image")
+          .eq("project_id", project.id);
+
+        setDbTestimonials(
+          (testimonials ?? []).map((t: any) => ({
+            name: t.name,
+            role: t.role,
+            content: t.content,
+            image: t.image,
+          }))
+        );
+
+        /* Verified payments total (kobo → naira) */
+        const { data: payments } = await supabase
+          .from("payments")
+          .select("amount")
+          .eq("project_id", project.id)
+          .eq("status", "paid");
+
+        const totalKobo = (payments ?? []).reduce(
+          (sum: number, row: any) => sum + Number(row.amount || 0),
+          0
+        );
+        setDbRaised(Math.round(totalKobo / 100));
+
+        if (!cancelled) setLoading(false);
+      } catch {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, hardcoded]);
 
   const reveal = (delay = 0) => ({
     initial: reduceMotion ? false : { opacity: 0, y: 28 },
@@ -745,7 +838,8 @@ export default function ProgramsDetailsPage() {
     transition: { duration: 0.85, delay, ease: EASE },
   });
 
-  if (!programme) {
+  const programmeOrDb = hardcoded || dbProject;
+  if (!programmeOrDb || (loading && !hardcoded)) {
     return (
       <main className="grid min-h-[70vh] place-items-center bg-white px-5 pt-32 font-sans text-[#12312B]">
         <div className="text-center">
@@ -766,24 +860,291 @@ export default function ProgramsDetailsPage() {
     );
   }
 
-  const c = CASES[programme.slug];
+  /* Hardcoded project path */
+  if (hardcoded) {
+    const c = CASES[hardcoded.slug];
 
-  const keyFacts = programme.facts
-    .filter((f) => f.label !== "Programme")
-    .slice(0, 4);
+    const keyFacts = hardcoded.facts
+      .filter((f) => f.label !== "Programme")
+      .slice(0, 4);
 
-  const rows = [
-    { label: "Problem", text: c.problem },
-    { label: "Goal", text: c.goal },
-    { label: "Solution", text: c.solution },
-    { label: "Outcome", text: c.outcome },
+    const rows = [
+      { label: "Problem", text: c.problem },
+      { label: "Goal", text: c.goal },
+      { label: "Solution", text: c.solution },
+      { label: "Outcome", text: c.outcome },
+    ];
+
+    return (
+      <main className="overflow-hidden bg-white font-sans text-[#12312B]">
+        {/* HERO */}
+        <section className="relative px-5 pt-28 sm:px-6 sm:pt-36 lg:px-10 lg:pt-40">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 440 440"
+            fill="none"
+            className="pointer-events-none absolute right-0 top-0 h-[240px] w-[240px] -scale-x-100 sm:h-[320px] sm:w-[320px] lg:h-[440px] lg:w-[440px]"
+          >
+            <motion.g
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, ease: EASE }}
+              style={{ transformOrigin: "0px 0px" }}
+            >
+              <path d="M0 0 H70 A70 70 0 0 1 0 70 Z" fill="#E6A100" />
+              {[110, 160, 210, 260, 310, 360].map((r, i) => (
+                <path
+                  key={r}
+                  d={`M${r} 0 A${r} ${r} 0 0 1 0 ${r}`}
+                  stroke="#E6A100"
+                  strokeWidth="1.5"
+                  opacity={1 - i * 0.14}
+                />
+              ))}
+              <path
+                d="M400 0 A400 400 0 0 1 0 400"
+                stroke="#E6A100"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeDasharray="1 12"
+              />
+              <circle cx="148" cy="148" r="8" fill="#E6A100" />
+              <circle cx="224" cy="224" r="5" fill="#E6A100" />
+              <circle cx="296" cy="102" r="4" fill="#E6A100" opacity="0.7" />
+              <circle cx="102" cy="296" r="4" fill="#E6A100" opacity="0.7" />
+            </motion.g>
+          </svg>
+
+          <div className="relative mx-auto max-w-[1400px]">
+            <motion.div {...reveal(0)} className="mb-8 sm:mb-10">
+              <Link
+                to="/our-work"
+                aria-label="Back"
+                className="group inline-flex items-center gap-3 font-sans text-xs font-semibold uppercase tracking-wider text-[#12312B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6A100] focus-visible:ring-offset-4"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-full border border-[#12312B]/20 transition-all duration-300 group-hover:border-[#12312B] group-hover:bg-[#12312B] group-hover:text-white">
+                  <CustomArrowLeft
+                    size={14}
+                    color="currentColor"
+                    className="transition-transform duration-300 group-hover:-translate-x-0.5"
+                  />
+                </span>
+                Back
+              </Link>
+            </motion.div>
+
+            <div className="grid gap-8 lg:grid-cols-[1.5fr_0.9fr] lg:items-end lg:gap-20">
+              <div>
+                <motion.span
+                  {...reveal(0.02)}
+                  className="inline-flex items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[#12312B]"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#E6A100]" />
+                  Programme
+                </motion.span>
+
+                <motion.h1
+                  {...reveal(0.05)}
+                  className="mt-5 font-sans text-[clamp(2.8rem,6.4vw,5.8rem)] font-semibold leading-[1.02] tracking-[-0.055em]"
+                >
+                  {c.titleLead} {c.titleAccent}
+                </motion.h1>
+
+                <motion.ul {...reveal(0.1)} className="mt-7 flex flex-wrap gap-2">
+                  {c.pills.map((pill) => (
+                    <li
+                      key={pill}
+                      className="rounded-full border border-[#12312B]/30 px-3.5 py-1.5 font-sans text-[11px] font-medium text-[#12312B]"
+                    >
+                      {pill}
+                    </li>
+                  ))}
+                </motion.ul>
+              </div>
+
+              <motion.p
+                {...reveal(0.2)}
+                className="max-w-[460px] font-sans text-base leading-[1.8] text-[#12312B] sm:text-lg lg:justify-self-end"
+              >
+                {hardcoded.intro}
+              </motion.p>
+            </div>
+
+            <motion.dl
+              {...reveal(0.15)}
+              className="mt-10 grid grid-cols-2 border-y border-[#12312B]/20 lg:grid-cols-4"
+            >
+              {keyFacts.map((f, i) => (
+                <div
+                  key={f.label}
+                  className={`px-1 py-5 sm:px-6 ${i > 0 ? "lg:border-l lg:border-[#12312B]/20" : "lg:pl-0"} ${
+                    i % 2 === 1 ? "border-l border-[#12312B]/20 pl-5 lg:pl-6" : ""
+                  } ${i >= 2 ? "border-t border-[#12312B]/20 lg:border-t-0" : ""}`}
+                >
+                  <dt className="font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-[#12312B]/70">
+                    {f.label}
+                  </dt>
+                  <dd className="mt-1.5 font-sans text-sm font-semibold sm:text-base">
+                    {f.value}
+                  </dd>
+                </div>
+              ))}
+            </motion.dl>
+          </div>
+        </section>
+
+        <section className="px-5 pt-8 sm:px-6 lg:px-10">
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 1, ease: EASE }}
+            className="mx-auto max-w-[1400px] rounded-[28px] border border-[#12312B]/20 p-2 sm:p-3 lg:rounded-[36px]"
+          >
+            <div className="h-[300px] overflow-hidden rounded-[20px] bg-[#E8F0EC] sm:h-[440px] lg:h-[580px] lg:rounded-[26px]">
+              <img
+                src={hardcoded.image}
+                alt={hardcoded.imageAlt}
+                className="h-full w-full object-cover object-top"
+              />
+            </div>
+          </motion.div>
+        </section>
+
+        <section className="px-5 pb-16 pt-16 sm:px-6 sm:pt-24 lg:px-10 lg:pb-24 lg:pt-32">
+          <div className="mx-auto grid max-w-[1400px] gap-8 lg:grid-cols-[0.6fr_1.4fr] lg:gap-16">
+            <motion.span
+              {...reveal(0)}
+              className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#12312B]"
+            >
+              [Programme Overview]
+            </motion.span>
+
+            <div className="max-w-[820px]">
+              <motion.p
+                {...reveal(0.05)}
+                className="font-sans text-[clamp(1.2rem,2vw,1.6rem)] font-medium leading-[1.5] tracking-[-0.02em] text-[#12312B]"
+              >
+                <Rich text={c.overview} />
+              </motion.p>
+
+              <dl className="mt-12 border-b border-[#12312B]/20">
+                {rows.map((r, i) => (
+                  <motion.div
+                    key={r.label}
+                    {...reveal(i * 0.06)}
+                    className="grid gap-2 border-t border-[#12312B]/20 py-6 sm:grid-cols-[180px_1fr] sm:gap-8 sm:py-7"
+                  >
+                    <dt className="flex items-baseline gap-3 font-sans text-xs font-semibold uppercase tracking-[0.14em]">
+                      <span className="text-[#E6A100]">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {r.label}
+                    </dt>
+                    <dd className="font-sans text-[15px] leading-[1.8] text-[#12312B]">
+                      {r.text}
+                    </dd>
+                  </motion.div>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </section>
+
+        <section className="px-5 pb-16 sm:px-6 lg:px-10 lg:pb-24">
+          <div className="mx-auto max-w-[1400px]">
+            <motion.div {...reveal(0)} className="max-w-[560px]">
+              <span className="inline-flex items-center gap-2 font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/55 sm:text-[11px]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#E6A100]" />
+                On the ground
+              </span>
+
+              <h2 className="mt-5 font-sans text-3xl font-semibold leading-[1.12] tracking-[-0.04em] sm:text-4xl">
+                Moments from the programme.
+              </h2>
+            </motion.div>
+
+            <motion.div {...reveal(0.1)} className="mt-10">
+              <Gallery items={hardcoded.gallery} />
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="px-5 pb-16 sm:px-6 lg:px-10 lg:pb-24">
+          <div className="mx-auto max-w-[1400px]">
+            <motion.div {...reveal(0)} className="max-w-[560px]">
+              <span className="inline-flex items-center gap-2 font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/55 sm:text-[11px]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#E6A100]" />
+                In their words
+              </span>
+
+              <h2 className="mt-5 font-sans text-3xl font-semibold leading-[1.12] tracking-[-0.04em] sm:text-4xl">
+                The difference it makes.
+              </h2>
+            </motion.div>
+
+            <Testimonials items={hardcoded.testimonials} />
+          </div>
+        </section>
+
+        <section className="px-5 pb-20 sm:px-6 sm:pb-24 lg:px-10 lg:pb-32">
+          <motion.div {...reveal(0)} className="mx-auto max-w-[1400px]">
+            <DonationPanel programme={hardcoded} />
+          </motion.div>
+        </section>
+      </main>
+    );
+  }
+
+  /* Database-backed project path */
+  const p = dbProject!;
+  const tags = p.tags ?? [];
+  const tagLabel = tags.length > 0 ? tags[0] : "Programme";
+  const goalNaira = dbGoal || 0;
+  const raisedNaira = dbRaised || 0;
+  const pct = Math.min(100, Math.round((raisedNaira / Math.max(goalNaira, 1)) * 100));
+  const remaining = Math.max(0, goalNaira - raisedNaira);
+
+  const dbProgramme: any = {
+    slug: p.slug,
+    tag: tagLabel,
+    title: p.title,
+    intro: p.summary || "",
+    image: p.cover_image || impact1,
+    imageAlt: p.title,
+    gallery: dbImages,
+    testimonials: dbTestimonials.map((t) => ({
+      name: t.name,
+      role: t.role || "",
+      quote: t.content,
+      tone: "bg-[#E8F0EC]",
+    })),
+    donation: {
+      goal: goalNaira,
+      fallbackRaised: raisedNaira,
+      presets: [100000, 250000, 500000, 1000000, 2000000],
+    },
+  };
+
+  const dbKeyFacts = [
+    { label: "Location", value: p.location || "Not set" },
+    { label: "Status", value: p.status || "Ongoing" },
+    { label: "Began", value: p.start_date ? new Date(p.start_date).toLocaleDateString("en-NG", { year: "numeric" }) : "2019" },
+    { label: "Supported", value: "See dashboard" },
   ];
+
+  const dbRows = [
+    { label: "Problem", text: p.problem || "Not set" },
+    { label: "Goal", text: p.description || "Not set" },
+    { label: "Solution", text: p.solution || "Not set" },
+    { label: "Outcome", text: p.outcome || "Not set" },
+  ];
+
+  const donateTo = `/donate?project=${p.slug}`;
 
   return (
     <main className="overflow-hidden bg-white font-sans text-[#12312B]">
-      {/* HERO */}
       <section className="relative px-5 pt-28 sm:px-6 sm:pt-36 lg:px-10 lg:pt-40">
-        {/* Abstract corner design (top-right, mirrored) */}
         <svg
           aria-hidden="true"
           viewBox="0 0 440 440"
@@ -852,16 +1213,16 @@ export default function ProgramsDetailsPage() {
                 {...reveal(0.05)}
                 className="mt-5 font-sans text-[clamp(2.8rem,6.4vw,5.8rem)] font-semibold leading-[1.02] tracking-[-0.055em]"
               >
-                {c.titleLead} {c.titleAccent}
+                {p.title}
               </motion.h1>
 
               <motion.ul {...reveal(0.1)} className="mt-7 flex flex-wrap gap-2">
-                {c.pills.map((pill) => (
+                {tags.map((t: string, i: number) => (
                   <li
-                    key={pill}
+                    key={i}
                     className="rounded-full border border-[#12312B]/30 px-3.5 py-1.5 font-sans text-[11px] font-medium text-[#12312B]"
                   >
-                    {pill}
+                    {t}
                   </li>
                 ))}
               </motion.ul>
@@ -871,16 +1232,15 @@ export default function ProgramsDetailsPage() {
               {...reveal(0.2)}
               className="max-w-[460px] font-sans text-base leading-[1.8] text-[#12312B] sm:text-lg lg:justify-self-end"
             >
-              {programme.intro}
+              {p.summary || ""}
             </motion.p>
           </div>
 
-          {/* Key facts */}
           <motion.dl
             {...reveal(0.15)}
             className="mt-10 grid grid-cols-2 border-y border-[#12312B]/20 lg:grid-cols-4"
           >
-            {keyFacts.map((f, i) => (
+            {dbKeyFacts.map((f, i) => (
               <div
                 key={f.label}
                 className={`px-1 py-5 sm:px-6 ${i > 0 ? "lg:border-l lg:border-[#12312B]/20" : "lg:pl-0"} ${
@@ -899,7 +1259,6 @@ export default function ProgramsDetailsPage() {
         </div>
       </section>
 
-      {/* MAIN IMAGE */}
       <section className="px-5 pt-8 sm:px-6 lg:px-10">
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
@@ -910,15 +1269,14 @@ export default function ProgramsDetailsPage() {
         >
           <div className="h-[300px] overflow-hidden rounded-[20px] bg-[#E8F0EC] sm:h-[440px] lg:h-[580px] lg:rounded-[26px]">
             <img
-              src={programme.image}
-              alt={programme.imageAlt}
+              src={p.cover_image || impact1}
+              alt={p.title}
               className="h-full w-full object-cover object-top"
             />
           </div>
         </motion.div>
       </section>
 
-      {/* OVERVIEW */}
       <section className="px-5 pb-16 pt-16 sm:px-6 sm:pt-24 lg:px-10 lg:pb-24 lg:pt-32">
         <div className="mx-auto grid max-w-[1400px] gap-8 lg:grid-cols-[0.6fr_1.4fr] lg:gap-16">
           <motion.span
@@ -933,11 +1291,11 @@ export default function ProgramsDetailsPage() {
               {...reveal(0.05)}
               className="font-sans text-[clamp(1.2rem,2vw,1.6rem)] font-medium leading-[1.5] tracking-[-0.02em] text-[#12312B]"
             >
-              <Rich text={c.overview} />
+              {p.description || ""}
             </motion.p>
 
             <dl className="mt-12 border-b border-[#12312B]/20">
-              {rows.map((r, i) => (
+              {dbRows.map((r, i) => (
                 <motion.div
                   key={r.label}
                   {...reveal(i * 0.06)}
@@ -959,7 +1317,6 @@ export default function ProgramsDetailsPage() {
         </div>
       </section>
 
-      {/* IMAGES */}
       <section className="px-5 pb-16 sm:px-6 lg:px-10 lg:pb-24">
         <div className="mx-auto max-w-[1400px]">
           <motion.div {...reveal(0)} className="max-w-[560px]">
@@ -974,12 +1331,17 @@ export default function ProgramsDetailsPage() {
           </motion.div>
 
           <motion.div {...reveal(0.1)} className="mt-10">
-            <Gallery items={programme.gallery} />
+            {dbImages.length > 0 ? (
+              <Gallery items={dbImages} />
+            ) : (
+              <div className="text-[#12312B]/40 text-sm text-center py-20">
+                No gallery images yet.
+              </div>
+            )}
           </motion.div>
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
       <section className="px-5 pb-16 sm:px-6 lg:px-10 lg:pb-24">
         <div className="mx-auto max-w-[1400px]">
           <motion.div {...reveal(0)} className="max-w-[560px]">
@@ -993,14 +1355,152 @@ export default function ProgramsDetailsPage() {
             </h2>
           </motion.div>
 
-          <Testimonials items={programme.testimonials} />
+          {dbTestimonials.length > 0 ? (
+            <Testimonials items={dbProgramme.testimonials} />
+          ) : (
+            <div className="text-[#12312B]/40 text-sm text-center py-20">
+              No testimonials yet.
+            </div>
+          )}
         </div>
       </section>
 
-      {/* DONATION */}
       <section className="px-5 pb-20 sm:px-6 sm:pb-24 lg:px-10 lg:pb-32">
         <motion.div {...reveal(0)} className="mx-auto max-w-[1400px]">
-          <DonationPanel programme={programme} />
+          <div className="relative overflow-hidden rounded-[24px] bg-[#12312B] px-6 py-10 text-white sm:rounded-[30px] sm:px-10 sm:py-12 lg:px-14 lg:py-14">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -bottom-28 -right-28 h-[380px] w-[380px]"
+            >
+              <span className="absolute inset-0 rounded-full border border-[#E6A100]/25" />
+              <span className="absolute inset-[18%] rounded-full border border-[#E6A100]/25" />
+              <span className="absolute inset-[36%] rounded-full border border-[#E6A100]/25" />
+            </div>
+
+            <div className="relative grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+              <div>
+                <span className="flex items-center justify-center gap-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-white/70">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E6A100] opacity-60 motion-reduce:animate-none" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[#E6A100]" />
+                  </span>
+                  Live donations
+                </span>
+
+                <h2 className="mx-auto mt-4 max-w-[480px] text-center font-sans text-[clamp(1.9rem,3.4vw,2.9rem)] font-semibold leading-[1.08] tracking-[-0.035em]">
+                  Help us fund {tagLabel}.
+                </h2>
+
+                <p className="mx-auto mt-4 max-w-[440px] text-center font-sans text-sm leading-[1.8] text-white/70">
+                  Every naira goes into this programme. Here is how far we have come
+                  and how much is still needed.
+                </p>
+
+                <div className="mt-9">
+                  <div className="flex items-end justify-between gap-4">
+                    <div>
+                      <p className="font-sans text-[clamp(2rem,4vw,3rem)] font-semibold leading-none tracking-[-0.03em] tabular-nums">
+                        {naira(raisedNaira)}
+                        <span className="ml-3 text-sm font-normal tracking-normal text-white/55">
+                          {usd(raisedNaira)}
+                        </span>
+                      </p>
+                      <p className="mt-2 font-sans text-xs text-white/60">
+                        raised of {naira(goalNaira)} goal ({usd(goalNaira)})
+                      </p>
+                    </div>
+
+                    <p className="font-sans text-2xl font-semibold text-[#E6A100] tabular-nums">
+                      {pct}%
+                    </p>
+                  </div>
+
+                  <div
+                    role="progressbar"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={pct}
+                    aria-label="Funding progress"
+                    className="mt-4 h-2.5 overflow-hidden rounded-full bg-white/15"
+                  >
+                    <motion.div
+                      initial={reduceMotion ? false : { width: 0 }}
+                      whileInView={{ width: `${pct}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.4, ease: EASE }}
+                      className="h-full rounded-full bg-[#E6A100]"
+                    />
+                  </div>
+
+                  <p className="mt-4 font-sans text-sm text-white/75">
+                    <span className="font-semibold text-white">
+                      {naira(remaining)}
+                    </span>{" "}
+                    still needed to reach the goal.
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-[20px] bg-white p-6 text-[#12312B] sm:p-8">
+                <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
+                  CHOOSE AN AMOUNT
+                </span>
+
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  {dbProgramme.donation.presets.map((preset: number, idx: number) => {
+                    return (
+                      <button
+                        key={preset}
+                        type="button"
+                        className={`rounded-xl px-4 py-3.5 font-sans text-sm font-semibold transition-colors duration-300 ${
+                          dbProgramme.donation.presets.length % 2 === 1 && idx === dbProgramme.donation.presets.length - 1
+                            ? "col-span-2"
+                            : ""
+                        } bg-[#F4F6F2] text-[#12312B] hover:bg-[#E8F0EC]`}
+                      >
+                        <span className="block">{naira(preset)}</span>
+                        <span className="mt-0.5 block text-[11px] font-normal text-[#12312B]/50">
+                          {usd(preset)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-5">
+                  <label
+                    htmlFor="custom-amount-db"
+                    className="mb-1 block font-sans text-xs font-medium"
+                  >
+                    Or enter your own amount
+                  </label>
+
+                  <div className="flex items-center border-b border-[#12312B]/20 transition-colors focus-within:border-[#12312B]">
+                    <span className="font-sans text-sm text-[#12312B]/55">₦</span>
+                    <input
+                      id="custom-amount-db"
+                      type="number"
+                      inputMode="numeric"
+                      min={0}
+                      defaultValue="0"
+                      placeholder="0"
+                      className="w-full bg-transparent px-2 py-3 font-sans text-sm outline-none placeholder:text-[#12312B]/35"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-5">
+                  <PillButton to={donateTo} variant="gold">
+                    DONATE NOW
+                  </PillButton>
+                </div>
+
+                <p className="mt-5 font-sans text-[11px] leading-[1.7] text-[#12312B]/50">
+                  Your gift is directed to {tagLabel}. Dollar amounts are approximate.
+                </p>
+              </div>
+            </div>
+          </div>
         </motion.div>
       </section>
     </main>
