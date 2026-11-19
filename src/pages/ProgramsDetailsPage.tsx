@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PillButton } from "@/components/about/Shared";
 import { CustomArrowLeft } from "@/components/ui/CustomIcons";
+import DonateForm from "@/components/donate/DonateForm";
 
 import impact1 from "@/assets/impact.jpeg";
 import impact2 from "@/assets/impact2.jpeg";
@@ -1096,6 +1097,56 @@ export default function ProgramsDetailsPage() {
     );
   }
 
+  /* Skeleton loader while fetching database-backed project */
+  if (loading && !hardcoded) {
+    return (
+      <main className="overflow-hidden bg-white font-sans text-[#12312B]">
+        <section className="px-5 pt-28 sm:px-6 sm:pt-36 lg:px-10 lg:pt-40">
+          <div className="mx-auto max-w-[1400px] space-y-8">
+            <div className="h-4 w-1/3 rounded-full bg-[#F4F6F2] animate-pulse" />
+            <div className="h-32 w-full rounded-[2rem] bg-[#F4F6F2] animate-pulse" />
+            <div className="grid gap-4 lg:grid-cols-2">
+              <div className="space-y-4">
+                <div className="h-4 w-full rounded bg-[#F4F6F2] animate-pulse" />
+                <div className="h-16 w-3/4 rounded bg-[#F4F6F2] animate-pulse" />
+                <div className="h-4 w-full rounded bg-[#F4F6F2] animate-pulse" />
+              </div>
+              <div className="space-y-4">
+                <div className="h-32 w-full rounded-[2rem] bg-[#E8F0EC] animate-pulse" />
+              </div>
+            </div>
+            <div className="h-4 w-1/2 rounded bg-[#F4F6F2] animate-pulse" />
+            <div className="h-32 w-full rounded-[2rem] bg-[#F4F6F2] animate-pulse" />
+            <div className="h-4 w-1/3 rounded-full bg-[#F4F6F2] animate-pulse" />
+            <div className="h-32 w-full rounded-[2rem] bg-[#F4F6F2] animate-pulse" />
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  /* Not found: loading done, no hardcoded match, no DB project */
+  if (!loading && !hardcoded && !dbProject) {
+    return (
+      <main className="grid min-h-[70vh] place-items-center bg-white px-5 pt-32 font-sans text-[#12312B]">
+        <div className="text-center">
+          <h1 className="text-3xl font-semibold tracking-[-0.03em]">
+            Programme not found
+          </h1>
+          <p className="mt-3 text-sm text-[#12312B]/65">
+            We couldn't find the programme you were looking for.
+          </p>
+          <Link
+            to="/our-work"
+            className="mt-6 inline-block text-xs font-semibold uppercase tracking-wider underline underline-offset-4"
+          >
+            Back to programmes
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
   /* Database-backed project path */
   const p = dbProject!;
   const tags = p.tags ?? [];
@@ -1139,8 +1190,6 @@ export default function ProgramsDetailsPage() {
     { label: "Solution", text: p.solution || "Not set" },
     { label: "Outcome", text: p.outcome || "Not set" },
   ];
-
-  const donateTo = `/donate?project=${p.slug}`;
 
   return (
     <main className="overflow-hidden bg-white font-sans text-[#12312B]">
@@ -1388,7 +1437,7 @@ export default function ProgramsDetailsPage() {
                 </span>
 
                 <h2 className="mx-auto mt-4 max-w-[480px] text-center font-sans text-[clamp(1.9rem,3.4vw,2.9rem)] font-semibold leading-[1.08] tracking-[-0.035em]">
-                  Help us fund {tagLabel}.
+                  {p.title}
                 </h2>
 
                 <p className="mx-auto mt-4 max-w-[440px] text-center font-sans text-sm leading-[1.8] text-white/70">
@@ -1441,63 +1490,8 @@ export default function ProgramsDetailsPage() {
                 </div>
               </div>
 
-              <div className="rounded-[20px] bg-white p-6 text-[#12312B] sm:p-8">
-                <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#12312B]/45">
-                  CHOOSE AN AMOUNT
-                </span>
-
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  {dbProgramme.donation.presets.map((preset: number, idx: number) => {
-                    return (
-                      <button
-                        key={preset}
-                        type="button"
-                        className={`rounded-xl px-4 py-3.5 font-sans text-sm font-semibold transition-colors duration-300 ${
-                          dbProgramme.donation.presets.length % 2 === 1 && idx === dbProgramme.donation.presets.length - 1
-                            ? "col-span-2"
-                            : ""
-                        } bg-[#F4F6F2] text-[#12312B] hover:bg-[#E8F0EC]`}
-                      >
-                        <span className="block">{naira(preset)}</span>
-                        <span className="mt-0.5 block text-[11px] font-normal text-[#12312B]/50">
-                          {usd(preset)}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="mt-5">
-                  <label
-                    htmlFor="custom-amount-db"
-                    className="mb-1 block font-sans text-xs font-medium"
-                  >
-                    Or enter your own amount
-                  </label>
-
-                  <div className="flex items-center border-b border-[#12312B]/20 transition-colors focus-within:border-[#12312B]">
-                    <span className="font-sans text-sm text-[#12312B]/55">₦</span>
-                    <input
-                      id="custom-amount-db"
-                      type="number"
-                      inputMode="numeric"
-                      min={0}
-                      defaultValue="0"
-                      placeholder="0"
-                      className="w-full bg-transparent px-2 py-3 font-sans text-sm outline-none placeholder:text-[#12312B]/35"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-5">
-                  <PillButton to={donateTo} variant="gold">
-                    DONATE NOW
-                  </PillButton>
-                </div>
-
-                <p className="mt-5 font-sans text-[11px] leading-[1.7] text-[#12312B]/50">
-                  Your gift is directed to {tagLabel}. Dollar amounts are approximate.
-                </p>
+              <div className="mt-8">
+                <DonateForm projectId={p.id} />
               </div>
             </div>
           </div>

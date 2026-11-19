@@ -1137,6 +1137,7 @@ export default function DashboardProjects() {
                                 <div className="mt-2 flex items-center gap-2">
                                   <input
                                     type="file"
+                                    id={`testimonial-image-${i}`}
                                     accept="image/jpeg,image/png,image/webp"
                                     onChange={(e) =>
                                       handleTestimonialImageChange(e, i)
@@ -1146,10 +1147,11 @@ export default function DashboardProjects() {
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      const input = document.querySelector(
-                                        `input[type="file"]:nth-of-type(${i + 1})`
-                                      ) as HTMLInputElement | null;
-                                      input?.click();
+                                      document
+                                        .getElementById(
+                                          `testimonial-image-${i}`
+                                        )
+                                        ?.click();
                                     }}
                                     className="flex h-8 items-center justify-center gap-1.5 rounded-lg border border-[#12312B]/10 bg-white px-2.5 text-[10px] font-semibold text-[#12312B] outline-none focus:border-[#12312B]/40 transition-all hover:bg-[#12312B]/[0.04]"
                                   >
@@ -1598,10 +1600,10 @@ export default function DashboardProjects() {
                           className="flex h-9 w-9 items-center justify-center rounded-lg text-[#12312B]/60 hover:bg-[#12312B]/[0.06]"
                           aria-label="Edit project"
                         >
-                          <Edit3 size={15} />
-                        </button>
-                        <button
-                          onClick={() => toggleStatus(project)}
+                        <Edit3 size={15} />
+                      </button>
+                      <button
+                        onClick={() => toggleStatus(project)}
                           className="flex h-9 w-9 items-center justify-center rounded-lg text-[#12312B]/60 hover:bg-[#E6A100]/10"
                           aria-label={project.status === "Ongoing" ? "Complete" : "Reopen"}
                         >

@@ -75,9 +75,32 @@ export default function ProgramsList() {
         {/* Programme Cards */}
         <div className="mt-10 grid gap-3 lg:mt-14">
           {loading ? (
-            <div className="col-span-full flex justify-center py-20 text-[#12312B]/40 text-xs">
-              Loading programmes…
-            </div>
+            <>
+              {[1, 2, 3].map((i) => (
+                <motion.article
+                  key={i}
+                  animate={{ opacity: 1 }}
+                  className="group grid overflow-hidden rounded-[24px] lg:rounded-[28px] md:grid-cols-2 bg-[#F4F6F2]"
+                >
+                  <div className={`relative h-[260px] overflow-hidden sm:h-[320px] md:h-auto md:min-h-[380px] ${
+                    i % 2 === 1 ? "md:order-2" : ""
+                  }`}>
+                    <div className="absolute inset-0 h-full w-full bg-[#E8F0EC] animate-pulse" />
+                  </div>
+                  <div className="flex flex-col justify-between gap-10 p-7 sm:p-8 lg:p-12">
+                    <div className="space-y-4">
+                      <div className="h-3 w-1/2 rounded bg-[#E8F0EC] animate-pulse" />
+                      <div className="h-4 w-3/4 rounded bg-[#E8F0EC] animate-pulse" />
+                      <div className="h-3 w-full rounded bg-[#E8F0EC] animate-pulse" />
+                    </div>
+                    <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+                      <div className="h-9 w-24 rounded-full bg-[#E8F0EC] animate-pulse" />
+                      <div className="h-9 w-32 rounded-full bg-[#E8F0EC] animate-pulse" />
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </>
           ) : projects.length === 0 ? (
             <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
               <p className="text-[#12312B]/60 text-sm">
