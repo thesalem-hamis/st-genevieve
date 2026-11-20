@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
+import { Image } from "lucide-react";
 import AnimatedHeading from "@/components/about/AnimatedHeading";
 import { PillButton } from "@/components/about/Shared";
 import { supabase } from "@/lib/supabase";
@@ -102,10 +103,12 @@ export default function ProgramsList() {
               ))}
             </>
           ) : projects.length === 0 ? (
-            <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
-              <p className="text-[#12312B]/60 text-sm">
-                No programmes published yet. Add one from the dashboard.
-              </p>
+            <div className="col-span-full flex flex-col items-center justify-center py-24 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#12312B]/5 mb-4">
+                <Image size={24} color="#12312B" />
+              </div>
+              <p className="text-[#12312B]/40 text-sm font-medium">No programmes published yet.</p>
+              <p className="mt-1 text-[#12312B]/30 text-xs">Add one from the dashboard.</p>
             </div>
           ) : (
             projects.map((p, i) => {

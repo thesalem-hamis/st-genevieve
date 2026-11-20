@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Image, Quote } from "lucide-react";
 import { PillButton } from "@/components/about/Shared";
 import { CustomArrowLeft } from "@/components/ui/CustomIcons";
 import DonateForm from "@/components/donate/DonateForm";
@@ -399,8 +399,8 @@ function Gallery({ items }: { items: { src: string; alt: string }[] }) {
         onScroll={onScroll}
         className="-mx-5 flex snap-x snap-mandatory scroll-pl-5 gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:-mx-6 sm:scroll-pl-6 sm:gap-4 sm:px-6 lg:-mx-10 lg:scroll-pl-10 lg:px-10 [&::-webkit-scrollbar]:hidden"
       >
-        {items.map((g) => (
-          <li key={g.src} className="w-[86%] shrink-0 snap-start sm:w-[62%] lg:w-[46%]">
+        {items.map((g, gi) => (
+          <li key={`${gi}-${g.src}`} className="w-[86%] shrink-0 snap-start sm:w-[62%] lg:w-[46%]">
             <div className="group aspect-[4/5] overflow-hidden rounded-[22px] bg-[#F4F6F2] sm:aspect-[4/3] lg:rounded-[28px]">
               <img
                 src={g.src}
@@ -425,7 +425,7 @@ function Testimonials({ items }: { items: Programme["testimonials"] }) {
     <ul className="-mx-5 mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden">
       {items.map((t, idx) => (
         <motion.li
-          key={t.name}
+          key={`${idx}-${t.name}`}
           initial={reduceMotion ? false : { opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
@@ -1383,8 +1383,11 @@ export default function ProgramsDetailsPage() {
             {dbImages.length > 0 ? (
               <Gallery items={dbImages} />
             ) : (
-              <div className="text-[#12312B]/40 text-sm text-center py-20">
-                No gallery images yet.
+              <div className="flex flex-col items-center justify-center py-24 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#12312B]/5 mb-4">
+                  <Image size={24} color="#12312B" />
+                </div>
+                <p className="text-[#12312B]/40 text-sm font-medium">No gallery images yet.</p>
               </div>
             )}
           </motion.div>
@@ -1407,28 +1410,32 @@ export default function ProgramsDetailsPage() {
           {dbTestimonials.length > 0 ? (
             <Testimonials items={dbProgramme.testimonials} />
           ) : (
-            <div className="text-[#12312B]/40 text-sm text-center py-20">
-              No testimonials yet.
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#12312B]/5 mb-4">
+                <Quote size={24} color="#12312B" />
+              </div>
+              <p className="text-[#12312B]/40 text-sm font-medium">No testimonials yet.</p>
+              <p className="mt-1 text-[#12312B]/30 text-xs">Add beneficiary quotes from the dashboard.</p>
             </div>
           )}
         </div>
       </section>
 
-      <section className="px-5 pb-20 sm:px-6 sm:pb-24 lg:px-10 lg:pb-32">
+      <section className="px-4 pb-16 sm:px-6 sm:pb-20 lg:px-10 lg:pb-24">
         <motion.div {...reveal(0)} className="mx-auto max-w-[1400px]">
-          <div className="relative overflow-hidden rounded-[24px] bg-[#12312B] px-6 py-10 text-white sm:rounded-[30px] sm:px-10 sm:py-12 lg:px-14 lg:py-14">
+          <div className="relative overflow-hidden rounded-[24px] bg-[#12312B] px-4 py-8 text-white sm:rounded-[30px] sm:px-6 sm:py-10 lg:rounded-[36px] lg:px-8 lg:py-12">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-28 -right-28 h-[380px] w-[380px]"
+              className="pointer-events-none absolute -bottom-12 -right-12 h-[200px] w-[200px] sm:-bottom-28 sm:-right-28 sm:h-[380px] sm:w-[380px]"
             >
               <span className="absolute inset-0 rounded-full border border-[#E6A100]/25" />
               <span className="absolute inset-[18%] rounded-full border border-[#E6A100]/25" />
               <span className="absolute inset-[36%] rounded-full border border-[#E6A100]/25" />
             </div>
 
-            <div className="relative grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+            <div className="relative grid gap-6 sm:gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
               <div>
-                <span className="flex items-center justify-center gap-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-white/70">
+                <span className="flex items-center justify-center gap-2 font-sans text-[10px] font-medium uppercase tracking-[0.16em] text-white/70">
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E6A100] opacity-60 motion-reduce:animate-none" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-[#E6A100]" />
@@ -1436,30 +1443,30 @@ export default function ProgramsDetailsPage() {
                   Live donations
                 </span>
 
-                <h2 className="mx-auto mt-4 max-w-[480px] text-center font-sans text-[clamp(1.9rem,3.4vw,2.9rem)] font-semibold leading-[1.08] tracking-[-0.035em]">
+                <h2 className="mt-3 sm:mt-4 max-w-full text-center font-sans text-[clamp(1.6rem,3.4vw,2.6rem)] font-semibold leading-[1.1] tracking-[-0.03em]">
                   {p.title}
                 </h2>
 
-                <p className="mx-auto mt-4 max-w-[440px] text-center font-sans text-sm leading-[1.8] text-white/70">
+                <p className="mt-3 sm:mt-4 max-w-full text-center font-sans text-xs sm:text-sm leading-[1.7] text-white/70">
                   Every naira goes into this programme. Here is how far we have come
                   and how much is still needed.
                 </p>
 
-                <div className="mt-9">
-                  <div className="flex items-end justify-between gap-4">
+                <div className="mt-6 sm:mt-9">
+                  <div className="flex items-end justify-between gap-3 sm:gap-4">
                     <div>
-                      <p className="font-sans text-[clamp(2rem,4vw,3rem)] font-semibold leading-none tracking-[-0.03em] tabular-nums">
+                      <p className="font-sans text-[clamp(1.7rem,4vw,2.6rem)] font-semibold leading-none tracking-[-0.03em] tabular-nums">
                         {naira(raisedNaira)}
-                        <span className="ml-3 text-sm font-normal tracking-normal text-white/55">
+                        <span className="ml-2 text-xs sm:text-sm font-normal tracking-normal text-white/55">
                           {usd(raisedNaira)}
                         </span>
                       </p>
-                      <p className="mt-2 font-sans text-xs text-white/60">
+                      <p className="mt-2 font-sans text-[10px] text-white/60">
                         raised of {naira(goalNaira)} goal ({usd(goalNaira)})
                       </p>
                     </div>
 
-                    <p className="font-sans text-2xl font-semibold text-[#E6A100] tabular-nums">
+                    <p className="font-sans text-[1.8rem] font-semibold text-[#E6A100] tabular-nums">
                       {pct}%
                     </p>
                   </div>
@@ -1470,7 +1477,7 @@ export default function ProgramsDetailsPage() {
                     aria-valuemax={100}
                     aria-valuenow={pct}
                     aria-label="Funding progress"
-                    className="mt-4 h-2.5 overflow-hidden rounded-full bg-white/15"
+                    className="mt-4 sm:mt-4 h-2 sm:h-2.5 overflow-hidden rounded-full bg-white/15"
                   >
                     <motion.div
                       initial={reduceMotion ? false : { width: 0 }}
@@ -1481,7 +1488,7 @@ export default function ProgramsDetailsPage() {
                     />
                   </div>
 
-                  <p className="mt-4 font-sans text-sm text-white/75">
+                  <p className="mt-3 sm:mt-4 font-sans text-xs sm:text-sm text-white/75">
                     <span className="font-semibold text-white">
                       {naira(remaining)}
                     </span>{" "}
@@ -1490,7 +1497,7 @@ export default function ProgramsDetailsPage() {
                 </div>
               </div>
 
-              <div className="mt-8">
+              <div className="mt-6 sm:mt-8">
                 <DonateForm projectId={p.id} />
               </div>
             </div>

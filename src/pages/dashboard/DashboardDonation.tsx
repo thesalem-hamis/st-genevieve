@@ -346,15 +346,10 @@ export default function DashboardDonations() {
               ))}
             </div>
           ) : filteredPayments.length === 0 ? (
-            <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F4F6F2] text-[#12312B]/45">
-                {search || statusFilter !== "all" ? (
-                  <Search size={25} />
-                ) : (
-                  <Heart size={25} />
-                )}
+            <div className="flex flex-col items-center justify-center px-6 py-20 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#12312B]/5 mb-4">
+                <Heart size={24} color="#12312B" />
               </div>
-
               <h3 className="text-base font-semibold">
                 {search || statusFilter !== "all"
                   ? "No matching transactions"
